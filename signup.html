@@ -276,6 +276,20 @@
 									</div>
 									<div class="col-lg-6 col-md-6 col-12">
 										<div class="form-group">
+											<label>Password<span>*</span></label>
+											<input type="password" id="password">
+											<span id="passwordError" class="error"></span>
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
+											<label>Retype Password<span>*</span></label>
+											<input type="password" id="repassword">
+											<span id="repasswordError" class="error"></span>
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-12">
+										<div class="form-group">
 											<label>Address Line 1<span>*</span></label>
 											<input type="text" id="address1" placeholder="">
 											<span id="address1Error" class="error"></span>
@@ -505,6 +519,8 @@
 	
 			var firstName = $("#firstName").val();
 			var lastName = $("#lastName").val();
+			var password = $("#password").val();
+			var repassword = $("#repassword").val();
 			var email = $("#email").val();
 			var tel = $("#tel").val();
 			var address1 = $("#address1").val();
@@ -512,6 +528,7 @@
 
 			$("#firstNameError").html("");
 			$("#lastNameError").html("");
+			$("#passwordError").html("");
 			$("#emailError").html("");
 			$("#telError").html("");
 			$("#address1Error").html("");
@@ -523,6 +540,14 @@
 			}
 			if(lastName == ""){
 				$("#lastNameError").html("Please enter Last Name");
+				errorExsit = true;
+			}
+			if(password == "" || repassword == ""){
+				$("#passwordError").html("Please enter Password & Retype Password");
+				errorExsit = true;
+			}
+			if(password != repassword){
+				$("#passwordError").html("Password not match with Retype Password");
 				errorExsit = true;
 			}
 			if(email == ""){
@@ -546,7 +571,7 @@
 				return false;
 			}
 		
-			var mydata ="firstName="+firstName+"&lastName="+lastName+"&email="+email+"&tel="+tel+"&address1="+address1+"&address2="+address2;
+			var mydata ="firstName="+firstName+"&lastName="+lastName+"&password="+password+"&email="+email+"&tel="+tel+"&address1="+address1+"&address2="+address2;
 			$.ajax({
 				type: 'POST',
 				url: '/check_signup',

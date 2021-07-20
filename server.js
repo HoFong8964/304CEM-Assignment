@@ -1,5 +1,11 @@
 var http = require('http');
 var fs = require("fs");
+var qs = require("querystring");
+
+var MongoClient = require("mongodb").MongoClient;
+var dbUrl = "mongodb://localhost:27017";
+
+
 //create a server object:
 http.createServer(function (req, res) {
     if(req.url === "/index"){
@@ -42,8 +48,43 @@ http.createServer(function (req, res) {
 		if(req.method==="POST"){
 			formData = '';
 			return req.on('data', function(data) {
-				console.log(data);
-				res.end("hihi");
+				formData += data;
+				return req.on('end', function() {
+					var data;
+					data=qs.parse(formData);
+					handle_signup(data);
+					
+				});
+			});
+		}else{
+			res.end("Requedt Method not vaild");
+		}		
+	}else if(req.url === "/check_login"){
+		if(req.method==="POST"){
+			formData = '';
+			return req.on('data', function(data) {
+				formData += data;
+				return req.on('end', function() {
+					var data;
+					
+					data=qs.parse(formData);
+
+						
+					//res.end("dat="+ user + pwd);
+					MongoClient.connect(dbUrl, function(err, db) {
+					if (err) throw err;
+						var dbo = db.db("assignment");
+						var query={"email": data['email'],"password": data['password']};
+						console.log(query);
+						dbo.collection("users").find(query).toArray(function(err, result) {
+							if (err) throw err;
+							console.log("users find");
+							console.log(JSON.stringify(result));
+							db.close();
+							return res.end(JSON.stringify(result));
+						});
+					});
+				});
 			});
 			
 		}else{
@@ -68,4 +109,50 @@ function sendFileContent(response, fileName, contentType){
 		}
 		response.end();
 	});
+}d
+
+function handle_signup(data){
+	
+
+					//res.end("dat="+ user + pwd);
+					
+					var signup_info = {
+						'firstName': data['firstName'],
+						'lastName': data['lastName'],
+						'email': data['email'],
+						'tel': data['tel'],
+						'address1': data['address1'],
+						'address2': data['address2'],
+						'password': data['password']
+					};
+
+	if(signup_info)
+	{
+		MongoClient.connect(dbUrl, function(err,db){
+			if (err) throw err;
+			var dbo = db.db("assignment");
+			//var myobj = stringMsg;
+
+			//check user duplicate
+						var query={"email": signup_info['email']};
+						console.log(query);
+						dbo.collection("users").find(query).toArray(function(err, result) {
+							if (err) throw err;
+							if(result.length){
+								console.log(result.length);
+								console.log("Email duplicate");
+
+							}
+							else{
+								dbo.collection("users").insertOne(signup_info, function(err, res) {
+									if (err) throw err;
+									console.log("Account created!!");
+								});
+							}
+							db.close();
+						});
+		});
+	}
+
+
 }
