@@ -5,7 +5,6 @@ var qs = require("querystring");
 var MongoClient = require("mongodb").MongoClient;
 var dbUrl = "mongodb://localhost:27017";
 
-
 //create a server object:
 http.createServer(function (req, res) {
     if(req.url === "/index"){
@@ -52,7 +51,7 @@ http.createServer(function (req, res) {
 				return req.on('end', function() {
 					var data;
 					data=qs.parse(formData);
-					handle_signup(data);
+					handle_signup(res, data);
 					
 				});
 			});
@@ -71,7 +70,7 @@ http.createServer(function (req, res) {
 
 						
 					//res.end("dat="+ user + pwd);
-					MongoClient.connect(dbUrl, function(err, db) {
+					/* MongoClient.connect(dbUrl, function(err, db) {
 					if (err) throw err;
 						var dbo = db.db("assignment");
 						var query={"email": data['email'],"password": data['password']};
@@ -83,7 +82,7 @@ http.createServer(function (req, res) {
 							db.close();
 							return res.end(JSON.stringify(result));
 						});
-					});
+					}); */
 				});
 			});
 			
@@ -97,34 +96,27 @@ http.createServer(function (req, res) {
 }).listen(3000);
 
 
-function sendFileContent(response, fileName, contentType){
+function sendFileContent(res, fileName, contentType){
 	fs.readFile(fileName, function(err, data){
 		if(err){
-			response.writeHead(404);
-			response.write("Not Found!");
+			res.writeHead(404);
+			res.write("Not Found!");
 		}
 		else{
-			response.writeHead(200, {'Content-Type': contentType});
-			response.write(data);
+			res.writeHead(200, {'Content-Type': contentType});
+			res.write(data);
 		}
-		response.end();
+		res.end();
 	});
-}d
+}
 
-function handle_signup(data){
-	
-
-					//res.end("dat="+ user + pwd);
-					
-					var signup_info = {
-						'firstName': data['firstName'],
-						'lastName': data['lastName'],
-						'email': data['email'],
-						'tel': data['tel'],
-						'address1': data['address1'],
-						'address2': data['address2'],
-						'password': data['password']
-					};
+function handle_signup(res, data){
+	console.log("res: ", res);
+	var signup_info = {
+		'name': data['name'],
+		'email': data['email'],
+		'password': data['password']
+	};
 
 	if(signup_info)
 	{
@@ -134,25 +126,37 @@ function handle_signup(data){
 			//var myobj = stringMsg;
 
 			//check user duplicate
-						var query={"email": signup_info['email']};
-						console.log(query);
-						dbo.collection("users").find(query).toArray(function(err, result) {
-							if (err) throw err;
-							if(result.length){
-								console.log(result.length);
-								console.log("Email duplicate");
-
-							}
-							else{
-								dbo.collection("users").insertOne(signup_info, function(err, res) {
-									if (err) throw err;
-									console.log("Account created!!");
-								});
-							}
-							db.close();
-						});
+			var query={"email": signup_info['email']};
+			console.log(query);
+			dbo.collection("users").find(query).toArray(function(err, result) {
+				if (err) throw err;
+				if(result.length > 0){
+					error_response(res, 'Email has been used.');
+				}
+				else{
+					dbo.collection("users").insertOne(signup_info, function(err, result) {
+						if (err) throw err;
+						success_response(res, 'Account Created. Plaease login!');
+					});
+				}
+				db.close();
+			});
 		});
 	}
+}
 
+function error_response(res, msg){
+	var response = {
+		status  : 500,
+		message : msg
+	}
+	res.end(JSON.stringify(response));
+}
 
+function success_response(res, msg){
+	var response = {
+		status  : 200,
+		message : msg
+	}
+	res.end(JSON.stringify(response));
 }
