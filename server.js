@@ -111,11 +111,15 @@ function sendFileContent(res, fileName, contentType){
 }
 
 function handle_signup(res, data){
-	console.log("res: ", res);
+	const crypto = require('crypto')
+	const md5sum = crypto.createHash('md5');
+	let password = md5sum.update(data['password']).digest('hex');
+
+	console.log(res);
 	var signup_info = {
 		'name': data['name'],
 		'email': data['email'],
-		'password': data['password']
+		'password': password
 	};
 
 	if(signup_info)
