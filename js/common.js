@@ -2,6 +2,11 @@ $(document).on('ready', function() {
 	renderTopBar();
 	renderMiddleInner();
 	renderHeaderInner();
+	renderShopService();
+
+	$("#signup").click(function() {
+		handle_signup();
+	});
 });
 	
 function renderTopBar(){
@@ -14,7 +19,6 @@ function renderTopBar(){
 	"			<div class='right-content'>\n"+
 	"				<ul class='list-main'>\n"+
 	"					<li><i class='ti-location-pin'></i> Store location</li>\n"+
-	"					<li><i class='ti-alarm-clock'></i> <a href='#'>Daily deal</a></li>\n"+
 	"					<li><i class='ti-user'></i> <a href='#'>My account</a></li>\n"+
 	"					<li><i class='ti-power-off'></i><a href='login.html#'>Login</a></li>\n"+
 	"				</ul>\n"+
@@ -148,4 +152,180 @@ function renderHeaderInner(){
 	"    </div>"+
 	"</div>";
 	$(".header-inner").html(content);
+}
+
+function renderShopService(){
+	var content =
+	"<div class='container'>\n"+
+	"    <div class='row'>\n"+
+	"        <div class='col-lg-3 col-md-6 col-12'>\n"+
+	"            <!-- Start Single Service -->\n"+
+	"            <div class='single-service'>\n"+
+	"                <i class='ti-rocket'></i>\n"+
+	"                <h4>Free shiping</h4>\n"+
+	"                <p>Orders over $100</p>\n"+
+	"            </div>\n"+
+	"            <!-- End Single Service -->\n"+
+	"        </div>\n"+
+	"        <div class='col-lg-3 col-md-6 col-12'>\n"+
+	"            <!-- Start Single Service -->\n"+
+	"            <div class='single-service'>\n"+
+	"                <i class='ti-reload'></i>\n"+
+	"                <h4>Free Return</h4>\n"+
+	"                <p>Within 30 days returns</p>\n"+
+	"            </div>\n"+
+	"            <!-- End Single Service -->\n"+
+	"        </div>\n"+
+	"        <div class='col-lg-3 col-md-6 col-12'>\n"+
+	"            <!-- Start Single Service -->\n"+
+	"            <div class='single-service'>\n"+
+	"                <i class='ti-lock'></i>\n"+
+	"                <h4>Sucure Payment</h4>\n"+
+	"                <p>100% secure payment</p>\n"+
+	"            </div>\n"+
+	"            <!-- End Single Service -->\n"+
+	"        </div>\n"+
+	"        <div class='col-lg-3 col-md-6 col-12'>\n"+
+	"            <!-- Start Single Service -->\n"+
+	"            <div class='single-service'>\n"+
+	"                <i class='ti-tag'></i>\n"+
+	"                <h4>Best Peice</h4>\n"+
+	"                <p>Guaranteed price</p>\n"+
+	"            </div>\n"+
+	"            <!-- End Single Service -->\n"+
+	"        </div>\n"+
+	"    </div>\n"+
+	"</div>\n";
+	$(".shop-services").html(content);
+}
+
+function loadProducts(type){
+	var mydata ="type="+type;
+	$.ajax({
+		type: 'GET',
+		url: '/get_product',
+		dataType:"text",
+		data: mydata,
+		success: function(data) {
+			let req = JSON.parse(data);
+			let products = req.res;
+			var content = "";
+			products.forEach(product => {
+				let price = parseFloat(product.price).toFixed(2);
+				content +=
+				"<div class='col-xl-3 col-lg-4 col-md-4 col-12'>\n"+
+				"	<div class='single-product'>\n"+
+				"		<div class='product-img'>\n"+
+				"			<a href='product-details.html'>\n"+
+				"				<img class='default-img' src='" + product.img + "' alt='" + product.name + "'>\n"+
+				"				<img class='hover-img' src='" + product.img + "' alt='" + product.name + "'>\n"+
+				"			</a>\n"+
+				"			<div class='button-head'>\n"+
+				"				<div class='product-action'>\n"+
+				"					<a data-toggle='modal' data-target='#exampleModal' title='View Product Detail' href='#'><i class=' ti-eye'></i><span>View Product Detail</span></a>\n"+
+				"				</div>\n"+
+				"				<div class='product-action-2'>\n"+
+				"					<a title='Add to Wishlist' href='#'>Add to Wishlist</a>\n"+
+				"				</div>\n"+
+				"			</div>\n"+
+				"		</div>\n"+
+				"		<div class='product-content'>\n"+
+				"			<h3><a href='product-details.html'>" + product.name + "</a></h3>\n"+
+				"			<div class='product-price'>\n"+
+				"				<span>HKD$" + price + "</span>\n"+
+				"			</div>\n"+
+				"		</div>\n"+
+				"	</div>\n"+
+				"</div>\n";
+			});
+			
+			$("#" + type + " > .tab-single > .row").html(content);
+
+		}
+	});
+}
+
+function handle_signup(){
+	var errorExsit = false; 
+	var name = $("#name").val();
+	var email = $("#email").val();
+	var password = $("#password").val();
+	var repassword = $("#repassword").val();
+
+	$("#nameError").html("");
+	$("#passwordError").html("");
+	$("#emailError").html("");
+	if(name == ""){
+		$("#nameError").html("Please enter Name");
+		errorExsit = true;
+	}
+	if(email == ""){
+		$("#emailError").html("Please enter Email");
+		errorExsit = true;
+	}
+	const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	if(email && !re.test(email.toLowerCase())){
+		$("#emailError").html("Please enter a vaild email");
+		errorExsit = true;
+	}
+	if(password == ""){
+		$("#passwordError").html("Please enter Password");
+		errorExsit = true;
+	}
+	if(repassword == ""){
+		$("#repasswordError").html("Please enter Retype Password");
+		errorExsit = true;
+	}
+	const decimal = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+	if(password && !password.match(decimal)){
+		$("#passwordError").html("The password you entered didn't match our requirement <ul><li>The password should bt 6 to 20 characters</li><li>Contain at least one lowercase letter, one uppercase letter, one numeric digit</li></ul>");
+		errorExsit = true;
+	}
+	else if(password != repassword){
+		$("#passwordError").html("Password not match with Retype Password");
+		$("#repasswordError").html("Password not match with Retype Password");
+		errorExsit = true;
+	}
+	
+	if(email == ""){
+		$("#emailError").html("Please enter your Email Address");
+		errorExsit = true;
+	}
+	
+	if(errorExsit){
+		return false;
+	}
+	
+	var mydata ="name="+name+"&password="+password+"&email="+email;
+	$.ajax({
+		type: 'POST',
+		url: '/handle_signup',
+		dataType:"text",
+		data:mydata,
+		success: function(data) {
+			let req = JSON.parse(data);
+			alert(req.message);
+			if(req.status === 200){
+				window.location.href = "/login";
+			}
+		}
+	});
+}
+
+function check_signup_email(){
+	var email = $("#email").val();
+	var mydata ="email="+email;
+	$.ajax({
+		type: 'GET',
+		url: '/check_signup_email',
+		dataType:"text",
+		data:mydata,
+		success: function(data) {
+			let req = JSON.parse(data);
+			$("#emailError").html("");
+			if(req.status !== 200){
+				$("#emailError").html("Email has been used");
+			}
+		}
+	});
 }

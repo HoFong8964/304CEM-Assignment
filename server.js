@@ -7,6 +7,13 @@ var dbUrl = "mongodb://localhost:27017";
 
 //create a server object:
 http.createServer(function (req, res) {
+	if(req.method == "GET"){
+		let urlPart = req.url.split("?");
+		req.url = urlPart[0];
+		req.params = urlPart[1];
+	}
+	
+	
     if(req.url === "/index"){
 	   	sendFileContent(res, "index.html", "text/html");
     }else if(req.url === "/login"){
@@ -43,7 +50,7 @@ http.createServer(function (req, res) {
 		sendFileContent(res, req.url.toString().substring(1), "text/woff");
 	}else if(/^\/[a-zA-Z0-9\/-/?]*.woff2$/.test(req.url.toString())){
 		sendFileContent(res, req.url.toString().substring(1), "text/woff2");
-	}else if(req.url === "/check_signup"){
+	}else if(req.url === "/handle_signup"){
 		if(req.method==="POST"){
 			formData = '';
 			return req.on('data', function(data) {
@@ -58,6 +65,14 @@ http.createServer(function (req, res) {
 		}else{
 			res.end("Requedt Method not vaild");
 		}		
+	}else if(req.url === "/check_signup_email"){
+		if(req.method==="GET"){
+			formData = '';
+			data=qs.parse(req.params);
+			return check_signup_email(res, data);
+		}else{
+			res.end("Requedt Method not vaild");
+		}	
 	}else if(req.url === "/check_login"){
 		if(req.method==="POST"){
 			formData = '';
@@ -89,6 +104,14 @@ http.createServer(function (req, res) {
 		}else{
 			res.end("abc");
 		}		
+	}else if(req.url === "/get_product"){
+		if(req.method==="GET"){
+			formData = '';
+			data=qs.parse(req.params);
+			return get_product(res, data);
+		}else{
+			res.end("Requedt Method not vaild");
+		}		
 	}else{
 		sendFileContent(res, req.url.toString().substring(1), "");
 	}
@@ -115,7 +138,6 @@ function handle_signup(res, data){
 	const md5sum = crypto.createHash('md5');
 	let password = md5sum.update(data['password']).digest('hex');
 
-	console.log(res);
 	var signup_info = {
 		'name': data['name'],
 		'email': data['email'],
@@ -131,7 +153,6 @@ function handle_signup(res, data){
 
 			//check user duplicate
 			var query={"email": signup_info['email']};
-			console.log(query);
 			dbo.collection("users").find(query).toArray(function(err, result) {
 				if (err) throw err;
 				if(result.length > 0){
@@ -147,6 +168,83 @@ function handle_signup(res, data){
 			});
 		});
 	}
+}
+
+function check_signup_email(res, data){
+	const crypto = require('crypto')
+	const md5sum = crypto.createHash('md5');
+	let password = md5sum.update(data['password']).digest('hex');
+
+	var signup_info = {
+		'name': data['name'],
+		'email': data['email'],
+		'password': password
+	};
+
+	if(signup_info)
+	{
+		MongoClient.connect(dbUrl, function(err,db){
+			if (err) throw err;
+			var dbo = db.db("assignment");
+			//var myobj = stringMsg;
+
+			//check user duplicate
+			var query={"email": signup_info['email']};
+			dbo.collection("users").find(query).toArray(function(err, result) {
+				if (err) throw err;
+				if(result.length > 0){
+					error_response(res, 'Email has been used');
+				}
+				else{
+					dbo.collection("users").insertOne(signup_info, function(err, result) {
+						if (err) throw err;
+						success_response(res, 'Account Created. Plaease login!');
+					});
+				}
+				db.close();
+			});
+		});
+	}
+}
+
+function check_signup_email(res, data){
+	MongoClient.connect(dbUrl, function(err,db){
+		if (err) throw err;
+		var dbo = db.db("assignment");
+		var query={"email": data['email']};
+		dbo.collection("users").find(query).toArray(function(err, result) {
+			if (err) throw err;
+			if(result.length > 0){
+				var response = {
+					status  : 500,
+					res : false
+				}
+			}
+			else{
+				var response = {
+					status  : 200,
+					res : true
+				}
+			}
+			res.end(JSON.stringify(response));
+		});
+	});
+}
+
+function get_product(res, data){
+	MongoClient.connect(dbUrl, function(err,db){
+		if (err) throw err;
+		var dbo = db.db("assignment");
+		var query={"type": data['type']};
+		dbo.collection("products").find(query).toArray(function(err, result) {
+			if (err) throw err;
+			var response = {
+				status  : 200,
+				res : result
+			}
+			res.end(JSON.stringify(response));
+		});
+	});
 }
 
 function error_response(res, msg){

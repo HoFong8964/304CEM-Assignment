@@ -3345,6 +3345,11 @@ Version:1.0
 .shop.checkout .error{
 	color: #f00;
 }
+
+.shop.checkout .error ul, .shop.checkout .error ul li{
+	list-style: disc;
+    padding: 0 15px;
+}
 /*======================================
    End Checkout Form CSS
 ========================================*/
