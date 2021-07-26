@@ -1,19 +1,8 @@
 [{
   "_id": {
-    "$oid": "60f57d666ed61107208faf07"
+    "$oid": "60fe4e2e5151f55af85df5bd"
   },
-  "firstName": "sfsf",
-  "lastName": "sfsfcs",
-  "email": "ho@yahoo.com",
-  "tel": "43214632",
-  "address1": "fff",
-  "address2": "ddd",
-  "password": "123"
-},{
-  "_id": {
-    "$oid": "60f98fdf3e55d8110400b5e9"
-  },
-  "name": "yuentung_fong2",
+  "name": "Ho",
   "email": "fongtszho1995@gmail.com",
   "password": "6e6742a3942110388e2614c96a7a1b36"
 }]

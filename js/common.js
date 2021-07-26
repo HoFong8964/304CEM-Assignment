@@ -5,11 +5,11 @@ $(document).on('ready', function() {
 	renderShopService();
 
 	$("#signup").click(function() {
-		handle_signup();
+		handleSignup();
 	});
 
 	$("#login").click(function() {
-		handle_login();
+		handleLogin();
 	});
 });
 	
@@ -282,7 +282,7 @@ function loadProducts(type){
 	signup
 ======================================*/
 
-function handle_signup(){
+function handleSignup(){
 	var errorExsit = false; 
 	var name = $("#name").val();
 	var email = $("#email").val();
@@ -336,7 +336,7 @@ function handle_signup(){
 	var mydata ="name="+name+"&password="+password+"&email="+email;
 	$.ajax({
 		type: 'POST',
-		url: '/handle_signup',
+		url: '/handleSignup',
 		dataType:"text",
 		data:mydata,
 		success: function(data) {
@@ -349,12 +349,12 @@ function handle_signup(){
 	});
 }
 
-function check_signup_email(){
+function checkSignupEmail(){
 	var email = $("#email").val();
 	var mydata ="email="+email;
 	$.ajax({
 		type: 'GET',
-		url: '/check_signup_email',
+		url: '/checkSignupEmail',
 		dataType:"text",
 		data:mydata,
 		success: function(data) {
@@ -371,7 +371,7 @@ function check_signup_email(){
 	login
 ======================================*/
 
-function handle_login(){
+function handleLogin(){
 	var errorExsit = false; 
 	var email = $("#email").val();
 	var password = $("#password").val();
@@ -389,7 +389,7 @@ function handle_login(){
 	var mydata ="email="+email+"&password="+password;
 	$.ajax({
 		type: 'POST',
-		url: '/handle_login',
+		url: '/handleLogin',
 		dataType:"text",
 		data:mydata,
 		success: function(data) {
@@ -419,7 +419,7 @@ function addToWishlist(productId){
 	/* var mydata ="email="+email+"&password="+password;
 	$.ajax({
 		type: 'POST',
-		url: '/handle_login',
+		url: '/handleLogin',
 		dataType:"text",
 		data:mydata,
 		success: function(data) {
