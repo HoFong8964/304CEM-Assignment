@@ -13,8 +13,7 @@ http.createServer(function (req, res) {
 		req.params = urlPart[1];
 	}
 	
-	
-    if(req.url === "/index"){
+    if(req.url === "/index" || req.url === "/"){
 	   	sendFileContent(res, "index.html", "text/html");
     }else if(req.url === "/login"){
 		sendFileContent(res, "login.html", "text/html");
@@ -73,16 +72,15 @@ http.createServer(function (req, res) {
 		}else{
 			res.end("Requedt Method not vaild");
 		}	
-	}else if(req.url === "/check_login"){
+	}else if(req.url === "/handle_login"){
 		if(req.method==="POST"){
 			formData = '';
 			return req.on('data', function(data) {
 				formData += data;
 				return req.on('end', function() {
 					var data;
-					
 					data=qs.parse(formData);
-
+					handle_login(res, data);
 						
 					//res.end("dat="+ user + pwd);
 					/* MongoClient.connect(dbUrl, function(err, db) {
@@ -231,6 +229,33 @@ function check_signup_email(res, data){
 	});
 }
 
+function handle_login(res, data){
+	const crypto = require('crypto')
+	const md5sum = crypto.createHash('md5');
+	let password = md5sum.update(data['password']).digest('hex');
+
+	var login_info = {
+		'email': data['email'],
+		'password': password
+	};
+
+	if(login_info)
+	{
+		MongoClient.connect(dbUrl, function(err,db){
+			if (err) throw err;
+			var dbo = db.db("assignment");
+			dbo.collection("users").findOne(login_info).then(result => {
+				if(result){
+					success_response(res, 'Login Success', result);
+				} else {
+					error_response(res, 'The email or password is not correct');
+				}
+				db.close();
+			  })
+		});
+	}
+}
+
 function get_product(res, data){
 	MongoClient.connect(dbUrl, function(err,db){
 		if (err) throw err;
@@ -255,10 +280,11 @@ function error_response(res, msg){
 	res.end(JSON.stringify(response));
 }
 
-function success_response(res, msg){
+function success_response(res, msg, data=[]){
 	var response = {
 		status  : 200,
-		message : msg
+		message : msg,
+		data: data
 	}
 	res.end(JSON.stringify(response));
 }

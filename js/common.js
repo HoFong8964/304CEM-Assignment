@@ -7,27 +7,56 @@ $(document).on('ready', function() {
 	$("#signup").click(function() {
 		handle_signup();
 	});
+
+	$("#login").click(function() {
+		handle_login();
+	});
 });
 	
+/*====================================
+	render template
+======================================*/
+
 function renderTopBar(){
-	var content =
-	"<div class='container'>\n"+
-	"	<div class='row'>\n"+
-	"		<div class='col-lg-4 col-md-12 col-12'>\n"+
-	"		</div>\n"+
-	"		<div class='col-lg-8 col-md-12 col-12'>\n"+
-	"			<div class='right-content'>\n"+
-	"				<ul class='list-main'>\n"+
-	"					<li><i class='ti-location-pin'></i> Store location</li>\n"+
-	"					<li><i class='ti-user'></i> <a href='#'>My account</a></li>\n"+
-	"					<li><i class='ti-power-off'></i><a href='login.html#'>Login</a></li>\n"+
-	"				</ul>\n"+
-	"			</div>\n"+
-	"		</div>\n"+
-	"	</div>\n"+
-	"</div>";
+	if(getCookie('userId')){
+		let username = getCookie('name');
+		var content =
+		"<div class='container'>\n"+
+		"	<div class='row'>\n"+
+		"		<div class='col-lg-4 col-md-12 col-12'>\n"+
+		"		</div>\n"+
+		"		<div class='col-lg-8 col-md-12 col-12'>\n"+
+		"			<div class='right-content'>\n"+
+		"				<ul class='list-main'>\n"+
+		"					<li><i class='ti-user'></i> Hello " + username + "</li>\n"+
+		"					<li><i class='ti-settings'></i> <a href='#'>My account</a></li>\n"+
+		"					<li><i class='ti-power-off'></i><a href='/logout'>Logout</a></li>\n"+
+		"				</ul>\n"+
+		"			</div>\n"+
+		"		</div>\n"+
+		"	</div>\n"+
+		"</div>";
+	}
+	else{
+		var content =
+		"<div class='container'>\n"+
+		"	<div class='row'>\n"+
+		"		<div class='col-lg-4 col-md-12 col-12'>\n"+
+		"		</div>\n"+
+		"		<div class='col-lg-8 col-md-12 col-12'>\n"+
+		"			<div class='right-content'>\n"+
+		"				<ul class='list-main'>\n"+
+		"					<li><i class='ti-location-pin'></i> Store location</li>\n"+
+		"					<li><i class='ti-power-off'></i><a href='/login'>Login</a></li>\n"+
+		"				</ul>\n"+
+		"			</div>\n"+
+		"		</div>\n"+
+		"	</div>\n"+
+		"</div>";
+	}
 	$(".topbar").html(content);
 }
+	
 
 function renderMiddleInner(){
 	var content = 
@@ -36,7 +65,7 @@ function renderMiddleInner(){
 	"		<div class='col-lg-2 col-md-2 col-12'>\n"+
 	"			<!-- Logo -->\n"+
 	"			<div class='logo'>\n"+
-	"				<a href='index.html'><img src='images/logo.png' alt='logo'></a>\n"+
+	"				<a href='/index'><img src='images/logo.png' alt='logo'></a>\n"+
 	"			</div>\n"+
 	"			<!--/ End Logo -->\n"+
 	"			<!-- Search Form -->\n"+
@@ -199,6 +228,10 @@ function renderShopService(){
 	$(".shop-services").html(content);
 }
 
+/*====================================
+	load product list
+======================================*/
+
 function loadProducts(type){
 	var mydata ="type="+type;
 	$.ajax({
@@ -225,7 +258,7 @@ function loadProducts(type){
 				"					<a data-toggle='modal' data-target='#exampleModal' title='View Product Detail' href='#'><i class=' ti-eye'></i><span>View Product Detail</span></a>\n"+
 				"				</div>\n"+
 				"				<div class='product-action-2'>\n"+
-				"					<a title='Add to Wishlist' href='#'>Add to Wishlist</a>\n"+
+				"					<a title='Add to Wishlist' onclick=\"addToWishlist('" + product._id + "')\">Add to Wishlist</a>\n"+
 				"				</div>\n"+
 				"			</div>\n"+
 				"		</div>\n"+
@@ -244,6 +277,10 @@ function loadProducts(type){
 		}
 	});
 }
+
+/*====================================
+	signup
+======================================*/
 
 function handle_signup(){
 	var errorExsit = false; 
@@ -328,4 +365,128 @@ function check_signup_email(){
 			}
 		}
 	});
+}
+
+/*====================================
+	login
+======================================*/
+
+function handle_login(){
+	var errorExsit = false; 
+	var email = $("#email").val();
+	var password = $("#password").val();
+
+	$("#loginError").html("");
+	if(email == "" || password == ""){
+		$("#loginError").html("Please enter Email and Password to login");
+		errorExsit = true;
+	}
+	
+	if(errorExsit){
+		return false;
+	}
+	
+	var mydata ="email="+email+"&password="+password;
+	$.ajax({
+		type: 'POST',
+		url: '/handle_login',
+		dataType:"text",
+		data:mydata,
+		success: function(data) {
+			let req = JSON.parse(data);
+			console.log(req);
+			if(req.status === 200){
+				let userInfo = req.data;
+				setCookie("name", userInfo.name);
+				setCookie("userId", userInfo._id);
+				window.location.href = "/index";
+			} else{
+				$("#loginError").html(req.message);
+			}
+		}
+	});
+}
+
+/*====================================
+	wishlist
+======================================*/
+
+function addToWishlist(productId){
+	
+
+	console.log("addToWishlist: ", productId);
+	
+	/* var mydata ="email="+email+"&password="+password;
+	$.ajax({
+		type: 'POST',
+		url: '/handle_login',
+		dataType:"text",
+		data:mydata,
+		success: function(data) {
+			let req = JSON.parse(data);
+			console.log(req);
+			if(req.status === 200){
+				let userInfo = req.data;
+				setCookie("name", userInfo.name);
+				setCookie("userId", userInfo._id);
+				window.location.href = "/index";
+			} else{
+				$("#loginError").html(req.message);
+			}
+		}
+	}); */
+}
+
+/*====================================
+	captcha
+======================================*/
+function captchaVerify(token) {
+	var formData = new FormData();
+  	formData.append('token', token);
+  	var uriGAS = "https://script.google.com/macros/s/AKfycbzvvcvf-4nVTrT2jlK_Lf3q86hZ52N8am8M3zQQqrRAOu4U2AOZPhkdhjvwVnyIBL0XXg/exec";
+	console.log(uriGAS);
+  	fetch(uriGAS, {
+  	  method: "POST",
+  	  body: formData
+  	}).then(response => response.json())
+  	  .then(result => {
+  	    if(result.success) {
+  	    	$(".action").show();
+  	    } else {
+  	    	winalert(result['error-codes'][0])
+  	    }
+  	  })
+  	  .catch(err => {
+  	  	alert(err)
+  	  })
+}
+
+function captchaExpired(){
+	$(".action").hide();
+}
+
+/*====================================
+	cookies
+======================================*/
+
+function setCookie(cname, cvalue, exdays=1) {
+	const d = new Date();
+	d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	let expires = "expires="+ d.toUTCString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+	let name = cname + "=";
+	let ca = document.cookie.split(';');
+	for(let i = 0; i < ca.length; i++) {
+	  let c = ca[i];
+	  while (c.charAt(0) == ' ') {
+		c = c.substring(1);
+	  }
+	  if (c.indexOf(name) == 0) {
+		return c.substring(name.length, c.length);
+	  }
+	}
+	return "";
 }

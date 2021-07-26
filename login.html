@@ -8,7 +8,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Title Tag  -->
-    <title>Eshop - eCommerce HTML5 Template.</title>
+    <title>My 304CEM Assignment</title>
 	<!-- Favicon -->
 	<link rel="icon" type="image/png" href="images/favicon.png">
 	<!-- Web Font -->
@@ -88,19 +88,31 @@
 									<div class="form-group">
 										<label>Email Address</label>
 										<input type="email" id="email" placeholder="">
-										<span id="emailError" class="error"></span>
 									</div>
 								</div>
 								<div class="col-lg-12 col-md-12 col-12">
 									<div class="form-group">
 										<label>Password</label>
 										<input type="password" id="password">
-										<span id="passwordError" class="error"></span>
 									</div>
 								</div>
 								<div class="col-12">
-									<div class="form-group button">
-										<button type="submit" class="btn" id="signup">Login</button>
+									<span id="loginError" class="error"></span>
+								</div>
+								<div class="col-12">
+									<div class="form-group">
+										<div class="g-recaptcha"
+											data-sitekey="6Lcz97wbAAAAADtRyeDdiKXMGlZHPSV1FWS2qCBd"
+											data-theme="light" data-size="normal"
+											data-callback="captchaVerify"
+											data-expired-callback="captchaExpired"
+											data-error-callback="error">
+										</div>
+									</div>
+								</div>
+								<div class="col-12">
+									<div class="form-group button action" style="display: none;">
+										<button type="submit" class="btn" id="login">Login</button>
 									</div>
 								</div>
 							</div>
@@ -151,5 +163,7 @@
 	<script src="js/active.js"></script>
 	<!-- Common JS -->
 	<script src="js/common.js"></script>
+	<!-- Recaptcha JS -->
+	<script src="https://www.google.com/recaptcha/api.js"></script>
 </body>
 </html>
