@@ -81,26 +81,11 @@ http.createServer(function (req, res) {
 					var data;
 					data=qs.parse(formData);
 					handleLogin(res, data);
-						
-					//res.end("dat="+ user + pwd);
-					/* MongoClient.connect(dbUrl, function(err, db) {
-					if (err) throw err;
-						var dbo = db.db("assignment");
-						var query={"email": data['email'],"password": data['password']};
-						console.log(query);
-						dbo.collection("users").find(query).toArray(function(err, result) {
-							if (err) throw err;
-							console.log("users find");
-							console.log(JSON.stringify(result));
-							db.close();
-							return res.end(JSON.stringify(result));
-						});
-					}); */
 				});
 			});
 			
 		}else{
-			res.end("abc");
+			res.end("Requedt Method not vaild");
 		}		
 	}else if(req.url === "/get_product"){
 		if(req.method==="GET"){
@@ -110,6 +95,20 @@ http.createServer(function (req, res) {
 		}else{
 			res.end("Requedt Method not vaild");
 		}		
+	}else if(req.url === "/addToWishlist"){
+		if(req.method==="POST"){
+			formData = '';
+			return req.on('data', function(data) {
+				formData += data;
+				return req.on('end', function() {
+					var data;
+					data=qs.parse(formData);
+					addToWishlist(res, data);
+				});
+			});
+		}else{
+			res.end("Requedt Method not vaild");
+		}
 	}else{
 		sendFileContent(res, req.url.toString().substring(1), "");
 	}
@@ -270,6 +269,36 @@ function get_product(res, data){
 			res.end(JSON.stringify(response));
 		});
 	});
+}
+
+function addToWishlist(res, data){
+	console.log(data);
+	var wishlist_info = {
+		'productId': data['productId'],
+		'userId': data['userId'],
+	};
+
+	if(wishlist_info)
+	{
+		MongoClient.connect(dbUrl, function(err,db){
+			if (err) throw err;
+			var dbo = db.db("assignment");
+			dbo.collection("wishlist").find(wishlist_info).toArray(function(err, result) {
+				if (err) throw err;
+				if(result.length > 0){
+					if (err) throw err;
+					success_response(res, 'Product is in wishlist already!');
+				}
+				else{
+					dbo.collection("wishlist").insertOne(wishlist_info, function(err, result) {
+						if (err) throw err;
+						success_response(res, 'Product has been added to wishlist!');
+					});
+				}
+				db.close();
+			});
+		});
+	}
 }
 
 function error_response(res, msg){
