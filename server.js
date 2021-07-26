@@ -13,8 +13,7 @@ http.createServer(function (req, res) {
 		req.params = urlPart[1];
 	}
 	
-	
-    if(req.url === "/index"){
+    if(req.url === "/index" || req.url === "/"){
 	   	sendFileContent(res, "index.html", "text/html");
     }else if(req.url === "/login"){
 		sendFileContent(res, "login.html", "text/html");
@@ -50,7 +49,7 @@ http.createServer(function (req, res) {
 		sendFileContent(res, req.url.toString().substring(1), "text/woff");
 	}else if(/^\/[a-zA-Z0-9\/-/?]*.woff2$/.test(req.url.toString())){
 		sendFileContent(res, req.url.toString().substring(1), "text/woff2");
-	}else if(req.url === "/handle_signup"){
+	}else if(req.url === "/handleSignup"){
 		if(req.method==="POST"){
 			formData = '';
 			return req.on('data', function(data) {
@@ -58,51 +57,35 @@ http.createServer(function (req, res) {
 				return req.on('end', function() {
 					var data;
 					data=qs.parse(formData);
-					handle_signup(res, data);
+					handleSignup(res, data);
 					
 				});
 			});
 		}else{
 			res.end("Requedt Method not vaild");
 		}		
-	}else if(req.url === "/check_signup_email"){
+	}else if(req.url === "/checkSignupEmail"){
 		if(req.method==="GET"){
 			formData = '';
 			data=qs.parse(req.params);
-			return check_signup_email(res, data);
+			return checkSignupEmail(res, data);
 		}else{
 			res.end("Requedt Method not vaild");
 		}	
-	}else if(req.url === "/check_login"){
+	}else if(req.url === "/handleLogin"){
 		if(req.method==="POST"){
 			formData = '';
 			return req.on('data', function(data) {
 				formData += data;
 				return req.on('end', function() {
 					var data;
-					
 					data=qs.parse(formData);
-
-						
-					//res.end("dat="+ user + pwd);
-					/* MongoClient.connect(dbUrl, function(err, db) {
-					if (err) throw err;
-						var dbo = db.db("assignment");
-						var query={"email": data['email'],"password": data['password']};
-						console.log(query);
-						dbo.collection("users").find(query).toArray(function(err, result) {
-							if (err) throw err;
-							console.log("users find");
-							console.log(JSON.stringify(result));
-							db.close();
-							return res.end(JSON.stringify(result));
-						});
-					}); */
+					handleLogin(res, data);
 				});
 			});
 			
 		}else{
-			res.end("abc");
+			res.end("Requedt Method not vaild");
 		}		
 	}else if(req.url === "/get_product"){
 		if(req.method==="GET"){
@@ -112,6 +95,20 @@ http.createServer(function (req, res) {
 		}else{
 			res.end("Requedt Method not vaild");
 		}		
+	}else if(req.url === "/addToWishlist"){
+		if(req.method==="POST"){
+			formData = '';
+			return req.on('data', function(data) {
+				formData += data;
+				return req.on('end', function() {
+					var data;
+					data=qs.parse(formData);
+					addToWishlist(res, data);
+				});
+			});
+		}else{
+			res.end("Requedt Method not vaild");
+		}
 	}else{
 		sendFileContent(res, req.url.toString().substring(1), "");
 	}
@@ -133,7 +130,7 @@ function sendFileContent(res, fileName, contentType){
 	});
 }
 
-function handle_signup(res, data){
+function handleSignup(res, data){
 	const crypto = require('crypto')
 	const md5sum = crypto.createHash('md5');
 	let password = md5sum.update(data['password']).digest('hex');
@@ -170,7 +167,7 @@ function handle_signup(res, data){
 	}
 }
 
-function check_signup_email(res, data){
+function checkSignupEmail(res, data){
 	const crypto = require('crypto')
 	const md5sum = crypto.createHash('md5');
 	let password = md5sum.update(data['password']).digest('hex');
@@ -207,7 +204,7 @@ function check_signup_email(res, data){
 	}
 }
 
-function check_signup_email(res, data){
+function checkSignupEmail(res, data){
 	MongoClient.connect(dbUrl, function(err,db){
 		if (err) throw err;
 		var dbo = db.db("assignment");
@@ -231,6 +228,33 @@ function check_signup_email(res, data){
 	});
 }
 
+function handleLogin(res, data){
+	const crypto = require('crypto')
+	const md5sum = crypto.createHash('md5');
+	let password = md5sum.update(data['password']).digest('hex');
+
+	var login_info = {
+		'email': data['email'],
+		'password': password
+	};
+
+	if(login_info)
+	{
+		MongoClient.connect(dbUrl, function(err,db){
+			if (err) throw err;
+			var dbo = db.db("assignment");
+			dbo.collection("users").findOne(login_info).then(result => {
+				if(result){
+					success_response(res, 'Login Success', result);
+				} else {
+					error_response(res, 'The email or password is not correct');
+				}
+				db.close();
+			  })
+		});
+	}
+}
+
 function get_product(res, data){
 	MongoClient.connect(dbUrl, function(err,db){
 		if (err) throw err;
@@ -247,6 +271,36 @@ function get_product(res, data){
 	});
 }
 
+function addToWishlist(res, data){
+	console.log(data);
+	var wishlist_info = {
+		'productId': data['productId'],
+		'userId': data['userId'],
+	};
+
+	if(wishlist_info)
+	{
+		MongoClient.connect(dbUrl, function(err,db){
+			if (err) throw err;
+			var dbo = db.db("assignment");
+			dbo.collection("wishlist").find(wishlist_info).toArray(function(err, result) {
+				if (err) throw err;
+				if(result.length > 0){
+					if (err) throw err;
+					success_response(res, 'Product is in wishlist already!');
+				}
+				else{
+					dbo.collection("wishlist").insertOne(wishlist_info, function(err, result) {
+						if (err) throw err;
+						success_response(res, 'Product has been added to wishlist!');
+					});
+				}
+				db.close();
+			});
+		});
+	}
+}
+
 function error_response(res, msg){
 	var response = {
 		status  : 500,
@@ -255,10 +309,11 @@ function error_response(res, msg){
 	res.end(JSON.stringify(response));
 }
 
-function success_response(res, msg){
+function success_response(res, msg, data=[]){
 	var response = {
 		status  : 200,
-		message : msg
+		message : msg,
+		data: data
 	}
 	res.end(JSON.stringify(response));
 }

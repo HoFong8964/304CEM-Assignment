@@ -2,7 +2,7 @@
 Template Name: Eshop
 Author Name: Naimur Rahman
 Author URI: http://www.wpthemesgrid.com/
-Description: Eshop - eCommerce HTML5 Template.
+Description: 304CEM Assignment
 Version:1.0
 ========================================*/
 /*======================================
@@ -4903,3 +4903,7 @@ Version:1.0
 /*=============================
 	End Footer CSS
 ===============================*/
+
+.g-recaptcha {
+	margin-bottom: 15px;
+}
