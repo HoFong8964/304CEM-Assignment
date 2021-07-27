@@ -19,8 +19,8 @@ http.createServer(function (req, res) {
 		sendFileContent(res, "login.html", "text/html");
 	}else if(req.url === "/signup"){
 		sendFileContent(res, "signup.html", "text/html");
-	}else if(req.url === "/abc"){
-		sendFileContent(res, "index.html", "text/html");
+	}else if(req.url === "/wishlist"){
+		sendFileContent(res, "wishlist.html", "text/html");
 	}else if(/^-+|-+$|[^A-Za-z0-9-]*.js$/.test(req.url.toString())){
 		sendFileContent(res, req.url.toString().substring(1), "text/javascript");
 	}else if(/^-+|-+$|[^A-Za-z0-9-]*.bundle.min.js$/.test(req.url.toString())){
@@ -87,11 +87,11 @@ http.createServer(function (req, res) {
 		}else{
 			res.end("Requedt Method not vaild");
 		}		
-	}else if(req.url === "/get_product"){
+	}else if(req.url === "/getProduct"){
 		if(req.method==="GET"){
 			formData = '';
 			data=qs.parse(req.params);
-			return get_product(res, data);
+			return getProduct(res, data);
 		}else{
 			res.end("Requedt Method not vaild");
 		}		
@@ -109,6 +109,14 @@ http.createServer(function (req, res) {
 		}else{
 			res.end("Requedt Method not vaild");
 		}
+	}else if(req.url === "/getWishlist"){
+		if(req.method==="GET"){
+			formData = '';
+			data=qs.parse(req.params);
+			return getWishlist(res, data);
+		}else{
+			res.end("Requedt Method not vaild");
+		}		
 	}else{
 		sendFileContent(res, req.url.toString().substring(1), "");
 	}
@@ -255,7 +263,7 @@ function handleLogin(res, data){
 	}
 }
 
-function get_product(res, data){
+function getProduct(res, data){
 	MongoClient.connect(dbUrl, function(err,db){
 		if (err) throw err;
 		var dbo = db.db("assignment");
@@ -272,12 +280,10 @@ function get_product(res, data){
 }
 
 function addToWishlist(res, data){
-	console.log(data);
 	var wishlist_info = {
 		'productId': data['productId'],
 		'userId': data['userId'],
 	};
-
 	if(wishlist_info)
 	{
 		MongoClient.connect(dbUrl, function(err,db){
@@ -299,6 +305,28 @@ function addToWishlist(res, data){
 			});
 		});
 	}
+}
+
+function getWishlist(res, data){
+	MongoClient.connect(dbUrl, function(err,db){
+		if (err) throw err;
+		var dbo = db.db("assignment");
+		var query={"userId": data['userId']};
+		dbo.collection('wishlist').aggregate([
+			{ $lookup:
+			   {
+				 from: 'products',
+				 localField: 'productId',
+				 foreignField: '_id',
+				 as: 'productDetail'
+			   }
+			 }
+			]).toArray(function(err, res) {
+			if (err) throw err;
+			console.log(res);
+			db.close();
+		});
+	});
 }
 
 function error_response(res, msg){

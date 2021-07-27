@@ -22,7 +22,7 @@ $(document).on('ready', function() {
 ======================================*/
 
 function renderTopBar(){
-	if(getCookie('userId')){
+	if(isLogined()){
 		let username = getCookie('name');
 		var content =
 		"<div class='container'>\n"+
@@ -240,7 +240,7 @@ function loadProducts(type){
 	var mydata ="type="+type;
 	$.ajax({
 		type: 'GET',
-		url: '/get_product',
+		url: '/getProduct',
 		dataType:"text",
 		data: mydata,
 		success: function(data) {
@@ -426,7 +426,11 @@ function handleLogout(){
 ======================================*/
 
 function addToWishlist(productId){
-	
+	if(!isLogined()){
+		alert("Please login first");
+		return false;
+	}
+
 	var mydata ="productId="+productId+"&userId="+getCookie('userId');
 	$.ajax({
 		type: 'POST',
@@ -435,10 +439,34 @@ function addToWishlist(productId){
 		data:mydata,
 		success: function(data) {
 			let req = JSON.parse(data);
-			console.log(req);
 			if(req.status === 200){
 				alert(req.message);
 			}
+		}
+	});
+}
+
+function getWishlist(productId){
+	if(!isLogined()){
+		alert("Please login first");
+		
+	}
+
+	var mydata ="userId="+getCookie('userId');
+	$.ajax({
+		type: 'GET',
+		url: '/getWishlist',
+		dataType:"text",
+		data:mydata,
+		success: function(data) {
+			let wishlists = JSON.parse(data);
+			console.log(wishlists);
+			/* wishlists.forEach(wishlist => {
+				let price = parseFloat(wishlist.price).toFixed(2);
+				
+			});
+			
+			$("#" + type + " > .tab-single > .row").html(content); */
 		}
 	});
 }
@@ -474,6 +502,13 @@ function captchaExpired(){
 /*====================================
 	cookies
 ======================================*/
+
+function isLogined(){
+	if(getCookie('userId')){
+		return true;
+	}
+	return false;
+}
 
 function setCookie(cname, cvalue, exdays=1) {
 	const d = new Date();
