@@ -3,6 +3,7 @@ var fs = require("fs");
 var qs = require("querystring");
 
 var MongoClient = require("mongodb").MongoClient;
+var ObjectId = require('mongodb').ObjectId;
 var dbUrl = "mongodb://localhost:27017";
 
 //create a server object:
@@ -138,6 +139,10 @@ function sendFileContent(res, fileName, contentType){
 	});
 }
 
+/*====================================
+	signup
+======================================*/
+
 function handleSignup(res, data){
 	const crypto = require('crypto')
 	const md5sum = crypto.createHash('md5');
@@ -212,29 +217,9 @@ function checkSignupEmail(res, data){
 	}
 }
 
-function checkSignupEmail(res, data){
-	MongoClient.connect(dbUrl, function(err,db){
-		if (err) throw err;
-		var dbo = db.db("assignment");
-		var query={"email": data['email']};
-		dbo.collection("users").find(query).toArray(function(err, result) {
-			if (err) throw err;
-			if(result.length > 0){
-				var response = {
-					status  : 500,
-					res : false
-				}
-			}
-			else{
-				var response = {
-					status  : 200,
-					res : true
-				}
-			}
-			res.end(JSON.stringify(response));
-		});
-	});
-}
+/*====================================
+	login
+======================================*/
 
 function handleLogin(res, data){
 	const crypto = require('crypto')
@@ -263,6 +248,10 @@ function handleLogin(res, data){
 	}
 }
 
+/*====================================
+	product
+======================================*/
+
 function getProduct(res, data){
 	MongoClient.connect(dbUrl, function(err,db){
 		if (err) throw err;
@@ -278,6 +267,23 @@ function getProduct(res, data){
 		});
 	});
 }
+
+function getProductById(productId){
+	MongoClient.connect(dbUrl, function(err,db){
+		if (err) throw err;
+		var dbo = db.db("assignment");
+		var query={"_id": ObjectId(productId)};
+		console.log("query: ", query);
+		dbo.collection("products").findOne(query).then(result => {
+			//console.log(result);
+			return result;
+		})
+	});
+}
+
+/*====================================
+	wishlist
+======================================*/
 
 function addToWishlist(res, data){
 	var wishlist_info = {
@@ -312,18 +318,9 @@ function getWishlist(res, data){
 		if (err) throw err;
 		var dbo = db.db("assignment");
 		var query={"userId": data['userId']};
-		dbo.collection('wishlist').aggregate([
-			{ $lookup:
-			   {
-				 from: 'products',
-				 localField: 'productId',
-				 foreignField: '_id',
-				 as: 'productDetail'
-			   }
-			 }
-			]).toArray(function(err, res) {
+		dbo.collection('wishlist').find(query).toArray(function(err, result) {
 			if (err) throw err;
-			console.log(res);
+			console.log(result);
 			db.close();
 		});
 	});

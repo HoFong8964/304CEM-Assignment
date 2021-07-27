@@ -101,7 +101,7 @@ function renderMiddleInner(){
 	"			<div class='right-bar'>\n"+
 	"				<!-- Search Form -->\n"+
 	"				<div class='sinlge-bar'>\n"+
-	"					<a href='#' class='single-icon'><i class='fa fa-heart-o' aria-hidden='true'></i></a>\n"+
+	"					<a href='/wishlist' class='single-icon'><i class='fa fa-heart-o' aria-hidden='true'></i></a>\n"+
 	"				</div>\n"+
 	"				<div class='sinlge-bar'>\n"+
 	"					<a href='#' class='single-icon'><i class='fa fa-user-circle-o' aria-hidden='true'></i></a>\n"+
