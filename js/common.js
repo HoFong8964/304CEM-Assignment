@@ -237,12 +237,12 @@ function renderShopService(){
 ======================================*/
 
 function loadProducts(type){
-	var mydata ="type="+type;
+	var queryData ="type="+type;
 	$.ajax({
 		type: 'GET',
 		url: '/getProduct',
 		dataType:"text",
-		data: mydata,
+		data: queryData,
 		success: function(data) {
 			let req = JSON.parse(data);
 			let products = req.res;
@@ -337,12 +337,12 @@ function handleSignup(){
 		return false;
 	}
 	
-	var mydata ="name="+name+"&password="+password+"&email="+email;
+	var queryData ="name="+name+"&password="+password+"&email="+email;
 	$.ajax({
 		type: 'POST',
 		url: '/handleSignup',
 		dataType:"text",
-		data:mydata,
+		data:queryData,
 		success: function(data) {
 			let req = JSON.parse(data);
 			alert(req.message);
@@ -355,12 +355,12 @@ function handleSignup(){
 
 function checkSignupEmail(){
 	var email = $("#email").val();
-	var mydata ="email="+email;
+	var queryData ="email="+email;
 	$.ajax({
 		type: 'GET',
 		url: '/checkSignupEmail',
 		dataType:"text",
-		data:mydata,
+		data:queryData,
 		success: function(data) {
 			let req = JSON.parse(data);
 			$("#emailError").html("");
@@ -390,12 +390,12 @@ function handleLogin(){
 		return false;
 	}
 	
-	var mydata ="email="+email+"&password="+password;
+	var queryData ="email="+email+"&password="+password;
 	$.ajax({
 		type: 'POST',
 		url: '/handleLogin',
 		dataType:"text",
-		data:mydata,
+		data:queryData,
 		success: function(data) {
 			let req = JSON.parse(data);
 			console.log(req);
@@ -431,12 +431,12 @@ function addToWishlist(productId){
 		return false;
 	}
 
-	var mydata ="productId="+productId+"&userId="+getCookie('userId');
+	var queryData ="productId="+productId+"&userId="+getCookie('userId');
 	$.ajax({
 		type: 'POST',
 		url: '/addToWishlist',
 		dataType:"text",
-		data:mydata,
+		data:queryData,
 		success: function(data) {
 			let req = JSON.parse(data);
 			if(req.status === 200){
@@ -452,21 +452,55 @@ function getWishlist(productId){
 		
 	}
 
-	var mydata ="userId="+getCookie('userId');
+	var queryData ="userId="+getCookie('userId');
 	$.ajax({
 		type: 'GET',
 		url: '/getWishlist',
 		dataType:"text",
-		data:mydata,
+		data:queryData,
 		success: function(data) {
-			let wishlists = JSON.parse(data);
-			console.log(wishlists);
-			/* wishlists.forEach(wishlist => {
-				let price = parseFloat(wishlist.price).toFixed(2);
-				
-			});
-			
-			$("#" + type + " > .tab-single > .row").html(content); */
+			let req = JSON.parse(data);
+			if(req.status === 200){
+				let wishlists = req.res;
+				console.log(wishlists);
+				var content = "";
+				wishlists.forEach(wishlist => {
+					console.log(wishlist);
+					let productDetail = wishlist.productDetails[0];
+					let price = parseFloat(productDetail.price).toFixed(2);
+					content +=
+					"<tr id='" + wishlist['_id'] + "_col'>\n"+
+					"    <td class='image' data-title='No'><img src='" + productDetail.img + "' alt='#'></td>\n"+
+					"    <td class='product-des' data-title='Description'>\n"+
+					"        <p class='product-name'><a href='#'>" + productDetail.name + "</a></p>\n"+
+					"        <p class='product-des'>" + productDetail.desc + "</p>\n"+
+					"    </td>\n"+
+					"    <td class='price' data-title='Price'><span>HKD$" + price + "</span></td>\n"+
+					"    <td class='action' data-title='Remove'><a onclick=\"deleteWishlist('" + wishlist['_id'] + "')\"><i class='ti-trash remove-icon'></i></a></td>\n"+
+					"</tr>\n";
+				});
+
+				$(".wishlist").html(content);
+			}
+		}
+	});
+}
+
+function deleteWishlist(wishlistId){
+	var queryData ="wishlistId="+wishlistId;
+	$.ajax({
+		type: 'DELETE',
+		url: '/deleteWishlist',
+		dataType:"text",
+		data:queryData,
+		success: function(data) {
+			let req = JSON.parse(data);
+			if(req.status === 200){
+				let res = req.res;
+				if(res.deletedCount > 0){
+					$("#"+wishlistId+"_col").remove();
+				}
+			}
 		}
 	});
 }

@@ -118,6 +118,20 @@ http.createServer(function (req, res) {
 		}else{
 			res.end("Requedt Method not vaild");
 		}		
+	}else if(req.url === "/deleteWishlist"){
+		if(req.method==="DELETE"){
+			formData = '';
+			return req.on('data', function(data) {
+				formData += data;
+				return req.on('end', function() {
+					var data;
+					data=qs.parse(formData);
+					deleteWishlist(res, data);
+				});
+			});
+		}else{
+			res.end("Requedt Method not vaild");
+		}		
 	}else{
 		sendFileContent(res, req.url.toString().substring(1), "");
 	}
@@ -181,45 +195,52 @@ function handleSignup(res, data){
 }
 
 function checkSignupEmail(res, data){
-	const crypto = require('crypto')
-	const md5sum = crypto.createHash('md5');
-	let password = md5sum.update(data['password']).digest('hex');
-
-	var signup_info = {
-		'name': data['name'],
-		'email': data['email'],
-		'password': password
-	};
-
-	if(signup_info)
-	{
-		MongoClient.connect(dbUrl, function(err,db){
-			if (err) throw err;
-			var dbo = db.db("assignment");
-			//var myobj = stringMsg;
-
-			//check user duplicate
-			var query={"email": signup_info['email']};
-			dbo.collection("users").find(query).toArray(function(err, result) {
-				if (err) throw err;
-				if(result.length > 0){
-					error_response(res, 'Email has been used');
-				}
-				else{
-					dbo.collection("users").insertOne(signup_info, function(err, result) {
-						if (err) throw err;
-						success_response(res, 'Account Created. Plaease login!');
-					});
-				}
-				db.close();
-			});
-		});
-	}
+    MongoClient.connect(dbUrl, function(err,db){
+        if (err) throw err;
+        var dbo = db.db("assignment");
+        var query={"email": data['email']};
+        dbo.collection("users").find(query).toArray(function(err, result) {
+            if (err) throw err;
+            if(result.length > 0){
+                var response = {
+                    status  : 500,
+                    res : false
+                }
+            }
+            else{
+                var response = {
+                    status  : 200,
+                    res : true
+                }
+            }
+            res.end(JSON.stringify(response));
+        });
+    });
 }
 
-/*====================================
-	login
-======================================*/
+function checkSignupEmail(res, data){
+	MongoClient.connect(dbUrl, function(err,db){
+		if (err) throw err;
+		var dbo = db.db("assignment");
+		var query={"email": data['email']};
+		dbo.collection("users").find(query).toArray(function(err, result) {
+			if (err) throw err;
+			if(result.length > 0){
+				var response = {
+					status  : 500,
+					res : false
+				}
+			}
+			else{
+				var response = {
+					status  : 200,
+					res : true
+				}
+			}
+			res.end(JSON.stringify(response));
+		});
+	});
+}
 
 function handleLogin(res, data){
 	const crypto = require('crypto')
@@ -268,19 +289,6 @@ function getProduct(res, data){
 	});
 }
 
-function getProductById(productId){
-	MongoClient.connect(dbUrl, function(err,db){
-		if (err) throw err;
-		var dbo = db.db("assignment");
-		var query={"_id": ObjectId(productId)};
-		console.log("query: ", query);
-		dbo.collection("products").findOne(query).then(result => {
-			//console.log(result);
-			return result;
-		})
-	});
-}
-
 /*====================================
 	wishlist
 ======================================*/
@@ -318,12 +326,51 @@ function getWishlist(res, data){
 		if (err) throw err;
 		var dbo = db.db("assignment");
 		var query={"userId": data['userId']};
-		dbo.collection('wishlist').find(query).toArray(function(err, result) {
+		dbo.collection('wishlist').aggregate([
+			{
+				$project:
+					{
+						productObjId: {
+							$toObjectId: '$productId'
+						}
+					}
+			},
+			{
+				$lookup:
+					{
+						from: 'products',
+						localField: 'productObjId',
+						foreignField: '_id',
+						as: 'productDetails'
+					}
+			}
+		]).toArray(function(err, result) {
 			if (err) throw err;
-			console.log(result);
+			var response = {
+				status  : 200,
+				res : result
+			}
+			res.end(JSON.stringify(response));
 			db.close();
 		});
 	});
+}
+
+function deleteWishlist(res, data){
+	MongoClient.connect(dbUrl, function(err, db) {
+		if (err) throw err;
+		var dbo = db.db("assignment");
+		var query = { "_id": ObjectId(data['wishlistId']) };
+		dbo.collection("wishlist").deleteOne(query, function(err, result) {
+		  	if (err) throw err;
+		  	var response = {
+				status  : 200,
+				res : result
+			}
+			res.end(JSON.stringify(response));
+			db.close();
+		});
+	  });
 }
 
 function error_response(res, msg){
