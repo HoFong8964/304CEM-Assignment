@@ -325,8 +325,10 @@ function getWishlist(res, data){
 	MongoClient.connect(dbUrl, function(err,db){
 		if (err) throw err;
 		var dbo = db.db("assignment");
-		var query={"userId": data['userId']};
 		dbo.collection('wishlist').aggregate([
+			{
+				$match: {"userId": data['userId']}
+			},
 			{
 				$project:
 					{
