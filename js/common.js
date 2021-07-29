@@ -403,7 +403,7 @@ function handleLogin(){
 				let userInfo = req.data;
 				setCookie("name", userInfo.name);
 				setCookie("userId", userInfo._id);
-				window.location.href = "/index";
+				window.location.href = "/";
 			} else{
 				$("#loginError").html(req.message);
 			}
@@ -418,7 +418,7 @@ function handleLogin(){
 function handleLogout(){
 	deleteCookie("name");
 	deleteCookie("userId");
-	window.location.href = "/index";
+	window.location.href = "/";
 }
 
 /*====================================
@@ -428,6 +428,7 @@ function handleLogout(){
 function addToWishlist(productId){
 	if(!isLogined()){
 		alert("Please login first");
+		window.location.href = "/";
 		return false;
 	}
 
@@ -449,6 +450,8 @@ function addToWishlist(productId){
 function getWishlist(productId){
 	if(!isLogined()){
 		alert("Please login first");
+		window.location.href = "/";
+		return false;
 		
 	}
 
@@ -500,6 +503,64 @@ function deleteWishlist(wishlistId){
 				if(res.deletedCount > 0){
 					$("#"+wishlistId+"_col").remove();
 				}
+			}
+		}
+	});
+}
+
+/*====================================
+	covid
+======================================*/
+
+function getCovidData(productId){
+	if(!isLogined()){
+		alert("Please login first");
+		window.location.href = "/";
+		return false;
+		
+	}
+
+	var queryData ="userId="+getCookie('userId');
+	$.ajax({
+		type: 'GET',
+		url: 'https://api.covid19api.com/summary',
+		dataType:"text",
+		data: queryData,
+		success: function(data) {
+			let req = JSON.parse(data);
+			console.log(req);
+			if(req){
+				let countries = req.Countries;
+				let global = req.Global;
+				var content = "";
+				countries.forEach(country => {
+					console.log(country);
+					content +=
+					"<tr>\n"+
+					"    <td>" + country.Country + "</td>\n"+
+					"    <td>" + country.NewConfirmed + "</td>\n"+
+					"    <td>" + country.NewDeaths + "</td>\n"+
+					"    <td>" + country.NewRecovered + "</td>\n"+
+					"    <td>" + country.TotalConfirmed + "</td>\n"+
+					"    <td>" + country.TotalDeaths + "</td>\n"+
+					"    <td>" + country.TotalRecovered + "</td>\n"+
+					"</tr>\n";
+				});
+
+				content +=
+					"<tr class='global'>"+
+					"    <td>Global</td>\n"+
+					"    <td>" + global.NewConfirmed + "</td>\n"+
+					"    <td>" + global.NewDeaths + "</td>\n"+
+					"    <td>" + global.NewRecovered + "</td>\n"+
+					"    <td>" + global.TotalConfirmed + "</td>\n"+
+					"    <td>" + global.TotalDeaths + "</td>\n"+
+					"    <td>" + global.TotalRecovered + "</td>\n"+
+					"</tr>\n";
+
+
+
+				$(".covid").html(content);
 			}
 		}
 	});

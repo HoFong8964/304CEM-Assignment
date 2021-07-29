@@ -2931,6 +2931,11 @@ Version:1.0
 .shopping-cart .table .remove-icon{
 	font-size:16px;
 }
+.shopping-summery tbody .global{
+	background-color: #f00;
+    color: #fff;
+    font-weight: 700;
+}
 .shopping-cart .table td {
 	vertical-align: middle;
 	border-top: 1px solid #eee;
