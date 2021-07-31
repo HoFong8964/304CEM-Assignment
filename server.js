@@ -1,10 +1,12 @@
-var http = require('http');
-var fs = require("fs");
-var qs = require("querystring");
-
-var MongoClient = require("mongodb").MongoClient;
-var ObjectId = require('mongodb').ObjectId;
-var dbUrl = "mongodb://localhost:27017";
+const http = require('http');
+const fs = require("fs");
+const qs = require("querystring");
+const axios = require('axios');
+const { stringify } = require('querystring');
+const MongoClient = require("mongodb").MongoClient;
+const ObjectId = require('mongodb').ObjectId;
+const dbUrl = "mongodb://localhost:27017";
+const recaptchaSecret="6Lcz97wbAAAAACi4WlthHAEYO5dL9LL2d3yYTRxV";
 
 //create a server object:
 http.createServer(function (req, res) {
@@ -170,30 +172,45 @@ function handleSignup(res, data){
 		'password': password
 	};
 
-	if(signup_info)
-	{
-		MongoClient.connect(dbUrl, function(err,db){
-			if (err) throw err;
-			var dbo = db.db("assignment");
-			//var myobj = stringMsg;
 
-			//check user duplicate
-			var query={"email": signup_info['email']};
-			dbo.collection("users").find(query).toArray(function(err, result) {
-				if (err) throw err;
-				if(result.length > 0){
-					error_response(res, 'Email has been used.');
-				}
-				else{
-					dbo.collection("users").insertOne(signup_info, function(err, result) {
+	//check captcha before exec
+	const query = stringify({
+		secret: recaptchaSecret,
+		response: data['token']
+	});
+
+	axios
+  		.post(`https://google.com/recaptcha/api/siteverify?${query}`, {})
+  		.then((verifyRes) => {
+			if(verifyRes.data.success){
+				MongoClient.connect(dbUrl, function(err,db){
+					if (err) throw err;
+					var dbo = db.db("assignment");
+					//var myobj = stringMsg;
+		
+					//check user duplicate
+					var query={"email": signup_info['email']};
+					dbo.collection("users").find(query).toArray(function(err, result) {
 						if (err) throw err;
-						success_response(res, 'Account Created. Plaease login!');
+						if(result.length > 0){
+							error_response(res, 'Email has been used.');
+						}
+						else{
+							dbo.collection("users").insertOne(signup_info, function(err, result) {
+								if (err) throw err;
+								success_response(res, 'Account Created. Plaease login!');
+							});
+						}
+						db.close();
 					});
-				}
-				db.close();
-			});
-		});
-	}
+				});
+			} else{
+				error_response(res, 'Captcha Verify Fail');
+			}
+  		})
+  		.catch((error) => {
+  		  error_response(res, 'Captcha Verify Fail');
+  		});
 }
 
 function checkSignupEmail(res, data){
@@ -254,21 +271,37 @@ function handleLogin(res, data){
 		'password': password
 	};
 
-	if(login_info)
-	{
-		MongoClient.connect(dbUrl, function(err,db){
-			if (err) throw err;
-			var dbo = db.db("assignment");
-			dbo.collection("users").findOne(login_info).then(result => {
-				if(result){
-					success_response(res, 'Login Success', result);
-				} else {
-					error_response(res, 'The email or password is not correct');
-				}
-				db.close();
-			  })
-		});
-	}
+	//check captcha before exec
+	const query = stringify({
+		secret: recaptchaSecret,
+		response: data['token']
+	});
+
+	axios
+  		.post(`https://google.com/recaptcha/api/siteverify?${query}`, {})
+  		.then((verifyRes) => {
+			console.log("verifyRes: ", verifyRes);
+			if(verifyRes.data.success){
+				MongoClient.connect(dbUrl, function(err,db){
+					if (err) throw err;
+					var dbo = db.db("assignment");
+					dbo.collection("users").findOne(login_info).then(result => {
+						if(result){
+							success_response(res, 'Login Success', result);
+						} else {
+							error_response(res, 'The email or password is not correct');
+						}
+						db.close();
+					  })
+				});
+			} else{
+				error_response(res, 'Captcha Verify Fail');
+			}
+  		})
+  		.catch((error) => {
+  		  error_response(res, 'Captcha Verify Fail');
+  		});
+
 }
 
 /*====================================

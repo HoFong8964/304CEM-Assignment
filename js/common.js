@@ -292,6 +292,7 @@ function handleSignup(){
 	var email = $("#email").val();
 	var password = $("#password").val();
 	var repassword = $("#repassword").val();
+	var token = $("#token").val();
 
 	$("#nameError").html("");
 	$("#passwordError").html("");
@@ -337,7 +338,7 @@ function handleSignup(){
 		return false;
 	}
 	
-	var queryData ="name="+name+"&password="+password+"&email="+email;
+	var queryData ="name="+name+"&password="+password+"&email="+email+"&token="+token;
 	$.ajax({
 		type: 'POST',
 		url: '/handleSignup',
@@ -379,6 +380,7 @@ function handleLogin(){
 	var errorExsit = false; 
 	var email = $("#email").val();
 	var password = $("#password").val();
+	var token = $("#token").val();
 
 	$("#loginError").html("");
 	if(email == "" || password == ""){
@@ -390,7 +392,7 @@ function handleLogin(){
 		return false;
 	}
 	
-	var queryData ="email="+email+"&password="+password;
+	var queryData ="email="+email+"&password="+password+"&token="+token;
 	$.ajax({
 		type: 'POST',
 		url: '/handleLogin',
@@ -513,13 +515,6 @@ function deleteWishlist(wishlistId){
 ======================================*/
 
 function getCovidData(productId){
-	if(!isLogined()){
-		alert("Please login first");
-		window.location.href = "/";
-		return false;
-		
-	}
-
 	var queryData ="userId="+getCookie('userId');
 	$.ajax({
 		type: 'GET',
@@ -570,24 +565,8 @@ function getCovidData(productId){
 	captcha
 ======================================*/
 function captchaVerify(token) {
-	var formData = new FormData();
-  	formData.append('token', token);
-  	var uriGAS = "https://script.google.com/macros/s/AKfycbzvvcvf-4nVTrT2jlK_Lf3q86hZ52N8am8M3zQQqrRAOu4U2AOZPhkdhjvwVnyIBL0XXg/exec";
-	console.log(uriGAS);
-  	fetch(uriGAS, {
-  	  method: "POST",
-  	  body: formData
-  	}).then(response => response.json())
-  	  .then(result => {
-  	    if(result.success) {
-  	    	$(".action").show();
-  	    } else {
-  	    	winalert(result['error-codes'][0])
-  	    }
-  	  })
-  	  .catch(err => {
-  	  	alert(err)
-  	  })
+	$("#token").val(token);
+  	$(".action").show();
 }
 
 function captchaExpired(){
