@@ -1,3 +1,5 @@
+const { format } = require("path/posix");
+
 $(document).on('ready', function() {
 	renderTopBar();
 	renderMiddleInner();
@@ -515,12 +517,9 @@ function deleteWishlist(wishlistId){
 ======================================*/
 
 function getCovidData(productId){
-	var queryData ="userId="+getCookie('userId');
 	$.ajax({
 		type: 'GET',
 		url: 'https://api.covid19api.com/summary',
-		dataType:"text",
-		data: queryData,
 		success: function(data) {
 			let req = JSON.parse(data);
 			console.log(req);
@@ -556,6 +555,88 @@ function getCovidData(productId){
 
 
 				$(".covid").html(content);
+			}
+		}
+	});
+}
+
+
+/*====================================
+	weather
+======================================*/
+
+function getWeatherData(){
+	var queryData ="dataType=fnd&lang=tc";
+	$.ajax({
+		type: 'GET',
+		url: 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php',
+		dataType:"text",
+		data:queryData,
+		success: function(req) {
+			const res = JSON.parse(req);
+
+			console.log(res);
+			if(res){
+				let weatherForecast = res.weatherForecast;
+				console.log(weatherForecast);
+				totalDays = weatherForecast.length;
+				var content = "";
+				
+				// header
+				content +=
+					"<thead>\n"+
+					"    <tr class='main-hading'>";
+				for(let i=0; i< totalDays; i++){
+					content += "    <th>" + weatherForecast[i].forecastDate + "<br>" + weatherForecast[i].week + "</th>\n";
+				}
+				content +=
+					"	</tr>\n"+
+					"</thead>\n";
+			
+
+				// body
+				content += "<tbody>\n";
+
+				// icon
+				content += "<tr>\n";
+				for(let i=0; i< totalDays; i++){
+					content += "    <th>" + weatherForecast[i].forecastDate + "<br>" + weatherForecast[i].week + "</th>\n";
+				}
+				content += "</tr>\n";
+
+
+				content += "</tbody>\n";
+				
+
+				/* var content = "";
+				countries.forEach(country => {
+					console.log(country);
+					content +=
+					"<tr>\n"+
+					"    <td>" + country.Country + "</td>\n"+
+					"    <td>" + country.NewConfirmed + "</td>\n"+
+					"    <td>" + country.NewDeaths + "</td>\n"+
+					"    <td>" + country.NewRecovered + "</td>\n"+
+					"    <td>" + country.TotalConfirmed + "</td>\n"+
+					"    <td>" + country.TotalDeaths + "</td>\n"+
+					"    <td>" + country.TotalRecovered + "</td>\n"+
+					"</tr>\n";
+				});
+
+				content +=
+					"<tr class='global'>"+
+					"    <td>Global</td>\n"+
+					"    <td>" + global.NewConfirmed + "</td>\n"+
+					"    <td>" + global.NewDeaths + "</td>\n"+
+					"    <td>" + global.NewRecovered + "</td>\n"+
+					"    <td>" + global.TotalConfirmed + "</td>\n"+
+					"    <td>" + global.TotalDeaths + "</td>\n"+
+					"    <td>" + global.TotalRecovered + "</td>\n"+
+					"</tr>\n";
+
+ */
+
+				$(".weather").html(content);
 			}
 		}
 	});

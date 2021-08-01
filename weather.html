@@ -8,7 +8,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Title Tag  -->
-    <title>Homepage - 304CEM Assignment</title>
+    <title>Weather - 304CEM Assignment</title>
 	<!-- Favicon -->
 	<link rel="icon" type="image/png" href="images/favicon.png">
 	<!-- Web Font -->
@@ -41,9 +41,6 @@
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/responsive.css">
-
-	
-	
 </head>
 <body class="js">
 	
@@ -59,107 +56,41 @@
 	</header>
 	<!--/ End Header -->
 	
-	<!-- Start Small Banner  -->
-	<section class="small-banner section">
-		<div class="container-fluid">
+	<!-- Breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
 			<div class="row">
-				<!-- Single Banner  -->
-				<div class="col-lg-4 col-md-6 col-12">
-					<div class="single-banner">
-						<img src="images/covid.jpg" alt="#">
-						<div class="content">
-							<p>COVID-19</p>
-							<h3>Inforrmation <br> And Updates</h3>
-							<a href="/covid">Discover Now</a>
-						</div>
+				<div class="col-12">
+					<div class="bread-inner">
+						<ul class="bread-list">
+							<li><a href="/index">Home<i class="ti-arrow-right"></i></a></li>
+							<li class="active"><a href="/weather">Weather</a></li>
+						</ul>
 					</div>
 				</div>
-				<!-- /End Single Banner  -->
-				<!-- Single Banner  -->
-				<div class="col-lg-4 col-md-6 col-12">
-					<div class="single-banner">
-						<img src="images/weather.jpg" alt="#">
-						<div class="content">
-							<p>Weather</p>
-							<h3>9-day <br> weather forecast</h3>
-							<a href="/weather">Discover Now</a>
-						</div>
-					</div>
-				</div>
-				<!-- /End Single Banner  -->
-				<!-- Single Banner  -->
-				<div class="col-lg-4 col-12">
-					<div class="single-banner tab-height">
-						<img src="https://via.placeholder.com/600x370" alt="#">
-						<div class="content">
-							<p>Flash Sale</p>
-							<h3>Mid Season <br> Up to <span>40%</span> Off</h3>
-							<a href="#">Discover Now</a>
-						</div>
-					</div>
-				</div>
-				<!-- /End Single Banner  -->
 			</div>
 		</div>
-	</section>
-	<!-- End Small Banner -->
-	
-	<!-- Start Product Area -->
-    <div class="product-area section">
-            <div class="container">
-				<div class="row">
-					<div class="col-12">
-						<div class="section-title">
-							<h2>Products</h2>
-						</div>
-					</div>
+	</div>
+	<!-- End Breadcrumbs -->
+			
+	<!-- Start Covid -->
+	<div class="shopping-cart section">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<!-- Covid -->
+					<table class="table shopping-summery weather"></table>
+					<!--/ End Covid -->
 				</div>
-				<div class="row">
-					<div class="col-12">
-						<div class="product-info">
-							<div class="nav-main">
-								<!-- Tab Nav -->
-								<ul class="nav nav-tabs" id="myTab" role="tablist">
-									<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#man" role="tab">Man</a></li>
-									<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#women" role="tab">Woman</a></li>
-									<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#kid" role="tab">Kid</a></li>
-								</ul>
-								<!--/ End Tab Nav -->
-							</div>
-							<div class="tab-content" id="myTabContent">
-								<!-- Start Single Tab -->
-								<div class="tab-pane fade show active" id="man" role="tabpanel">
-									<div class="tab-single">
-										<div class="row"></div>
-									</div>
-								</div>
-								<!--/ End Single Tab -->
-								<!-- Start Single Tab -->
-								<div class="tab-pane fade" id="women" role="tabpanel">
-									<div class="tab-single">
-										<div class="row"></div>
-									</div>
-								</div>
-								<!--/ End Single Tab -->
-								<!-- Start Single Tab -->
-								<div class="tab-pane fade" id="kid" role="tabpanel">
-									<div class="tab-single">
-										<div class="row"></div>
-									</div>
-								</div>
-								<!--/ End Single Tab -->
-							</div>
-						</div>
-					</div>
-				</div>
-            </div>
-    </div>
-	<!-- End Product Area -->
+			</div>
+		</div>
+	</div>
+	<!--/ End Covid -->
 	
 	<!-- Start Shop Services Area -->
 	<section class="shop-services section home"></section>
 	<!-- End Shop Services Area -->
-	 
+ 
 	<!-- Jquery -->
     <script src="js/jquery.min.js"></script>
     <script src="js/jquery-migrate-3.0.0.js"></script>
@@ -196,9 +127,7 @@
 	<script src="js/common.js"></script>
 
 	<script>
-		loadProducts('man');
-		loadProducts('women');
-		loadProducts('kid');
+		getWeatherData();
 	</script>
 </body>
 </html>
