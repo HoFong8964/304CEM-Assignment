@@ -1,5 +1,3 @@
-const { format } = require("path/posix");
-
 $(document).on('ready', function() {
 	renderTopBar();
 	renderMiddleInner();
