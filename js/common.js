@@ -351,6 +351,8 @@ function handleSignup(){
 			alert(req.message);
 			if(req.status === 200){
 				window.location.href = "/login";
+			} else{
+				grecaptcha.reset();
 			}
 		}
 	});
@@ -410,6 +412,7 @@ function handleLogin(){
 				window.location.href = "/";
 			} else{
 				$("#loginError").html(req.message);
+				grecaptcha.reset();
 			}
 		}
 	});
