@@ -8,7 +8,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Title Tag  -->
-    <title>Weather - 304CEM Assignment</title>
+    <title>9-Day Weather Forecast - 304CEM Assignment</title>
 	<!-- Favicon -->
 	<link rel="icon" type="image/png" href="images/favicon.png">
 	<!-- Web Font -->
@@ -64,7 +64,7 @@
 					<div class="bread-inner">
 						<ul class="bread-list">
 							<li><a href="/index">Home<i class="ti-arrow-right"></i></a></li>
-							<li class="active"><a href="/weather">Weather</a></li>
+							<li class="active"><a href="/weather">9-Day Weather Forecast</a></li>
 						</ul>
 					</div>
 				</div>
@@ -73,19 +73,27 @@
 	</div>
 	<!-- End Breadcrumbs -->
 			
-	<!-- Start Covid -->
+	<!-- Start Weather -->
 	<div class="shopping-cart section">
 		<div class="container">
 			<div class="row">
 				<div class="col-12">
-					<!-- Covid -->
+					<select class="form-select" aria-label="Default select example" id="weather-lang" onchange="getWeatherData()">
+						<option value="en" selected>English</option>
+						<option value="tc">Traditional Chinese</option>
+						<option value="sc">Simplified Chinese</option>
+					</select>
+				</div>
+				<div class="col-12 weather-generalSituation"></div>
+				<div class="col-12">
+					<!-- Weather -->
 					<table class="table shopping-summery weather"></table>
-					<!--/ End Covid -->
+					<!--/ End Weather -->
 				</div>
 			</div>
 		</div>
 	</div>
-	<!--/ End Covid -->
+	<!--/ End Weather -->
 	
 	<!-- Start Shop Services Area -->
 	<section class="shop-services section home"></section>

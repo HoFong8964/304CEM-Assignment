@@ -567,7 +567,8 @@ function getCovidData(productId){
 ======================================*/
 
 function getWeatherData(){
-	var queryData ="dataType=fnd&lang=tc";
+	var lang = $("#weather-lang").val();
+	var queryData ="dataType=fnd&lang="+lang;
 	$.ajax({
 		type: 'GET',
 		url: 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php',
@@ -578,6 +579,7 @@ function getWeatherData(){
 
 			console.log(res);
 			if(res){
+				let generalSituation = res.generalSituation;
 				let weatherForecast = res.weatherForecast;
 				console.log(weatherForecast);
 				totalDays = weatherForecast.length;
@@ -601,7 +603,26 @@ function getWeatherData(){
 				// icon
 				content += "<tr>\n";
 				for(let i=0; i< totalDays; i++){
-					content += "    <th>" + weatherForecast[i].forecastDate + "<br>" + weatherForecast[i].week + "</th>\n";
+					content += "    <td><img src='http://www.hko.gov.hk/images/HKOWxIconOutline/pic" + weatherForecast[i].ForecastIcon + ".png' alt='" + weatherForecast[i].forecastWeather + "' style='width: 50px; height: 50px; margin: 6px; border-radius: 10px;'></td>\n";
+				}
+				content += "</tr>\n";
+
+				// min / max temp
+				content += "<tr>\n";
+				for(let i=0; i< totalDays; i++){
+					content += "    <td>" + weatherForecast[i].forecastMintemp.value + " | " + weatherForecast[i].forecastMaxtemp.value + " °C <br> " + weatherForecast[i].forecastMinrh.value + "-" + weatherForecast[i].forecastMaxrh.value + "%</td>\n";
+				}
+				content += "</tr>\n";
+
+				content += "<tr>\n";
+				for(let i=0; i< totalDays; i++){
+					content += "    <td>" + weatherForecast[i].forecastWind + "</td>\n";
+				}
+				content += "</tr>\n";
+
+				content += "<tr>\n";
+				for(let i=0; i< totalDays; i++){
+					content += "    <td>" + weatherForecast[i].forecastWeather + "</td>\n";
 				}
 				content += "</tr>\n";
 
@@ -609,34 +630,7 @@ function getWeatherData(){
 				content += "</tbody>\n";
 				
 
-				/* var content = "";
-				countries.forEach(country => {
-					console.log(country);
-					content +=
-					"<tr>\n"+
-					"    <td>" + country.Country + "</td>\n"+
-					"    <td>" + country.NewConfirmed + "</td>\n"+
-					"    <td>" + country.NewDeaths + "</td>\n"+
-					"    <td>" + country.NewRecovered + "</td>\n"+
-					"    <td>" + country.TotalConfirmed + "</td>\n"+
-					"    <td>" + country.TotalDeaths + "</td>\n"+
-					"    <td>" + country.TotalRecovered + "</td>\n"+
-					"</tr>\n";
-				});
-
-				content +=
-					"<tr class='global'>"+
-					"    <td>Global</td>\n"+
-					"    <td>" + global.NewConfirmed + "</td>\n"+
-					"    <td>" + global.NewDeaths + "</td>\n"+
-					"    <td>" + global.NewRecovered + "</td>\n"+
-					"    <td>" + global.TotalConfirmed + "</td>\n"+
-					"    <td>" + global.TotalDeaths + "</td>\n"+
-					"    <td>" + global.TotalRecovered + "</td>\n"+
-					"</tr>\n";
-
- */
-
+				$(".weather-generalSituation").html(generalSituation);
 				$(".weather").html(content);
 			}
 		}

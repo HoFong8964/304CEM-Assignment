@@ -2867,6 +2867,10 @@ Version:1.0
 /*======================================
    Start Shopping Cart CSS
 ========================================*/
+.weather-generalSituation {
+	font-size: 130%;
+}
+
 .table.shopping-summery {
 	background: #fff;
 }
@@ -2941,6 +2945,9 @@ Version:1.0
 	border-top: 1px solid #eee;
 	padding: 30px;
 	text-align: center;
+}
+.shopping-cart .table.weather td {
+	border: 1px solid #eee;
 }
 .shopping-summery tbody .price {
 	text-align: center;
