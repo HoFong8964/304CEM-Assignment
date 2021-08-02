@@ -22,6 +22,8 @@ http.createServer(function (req, res) {
 		sendFileContent(res, "login.html", "text/html");
 	}else if(req.url === "/signup"){
 		sendFileContent(res, "signup.html", "text/html");
+	}else if(req.url === "/products"){
+		sendFileContent(res, "products.html", "text/html");
 	}else if(req.url === "/wishlist"){
 		sendFileContent(res, "wishlist.html", "text/html");
 	}else if(req.url === "/covid"){

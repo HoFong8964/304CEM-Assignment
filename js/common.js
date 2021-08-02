@@ -33,7 +33,6 @@ function renderTopBar(){
 		"			<div class='right-content'>\n"+
 		"				<ul class='list-main'>\n"+
 		"					<li><i class='ti-user'></i> Hello " + username + "</li>\n"+
-		"					<li><i class='ti-settings'></i> <a href='#'>My account</a></li>\n"+
 		"					<li><i class='ti-power-off'></i><a id='logout' href='#'>Logout</a></li>\n"+
 		"				</ul>\n"+
 		"			</div>\n"+
@@ -50,7 +49,6 @@ function renderTopBar(){
 		"		<div class='col-lg-8 col-md-12 col-12'>\n"+
 		"			<div class='right-content'>\n"+
 		"				<ul class='list-main'>\n"+
-		"					<li><i class='ti-location-pin'></i> Store location</li>\n"+
 		"					<li><i class='ti-power-off'></i><a href='/login'>Login</a></li>\n"+
 		"				</ul>\n"+
 		"			</div>\n"+
@@ -105,38 +103,6 @@ function renderMiddleInner(){
 	"				</div>\n"+
 	"				<div class='sinlge-bar'>\n"+
 	"					<a href='#' class='single-icon'><i class='fa fa-user-circle-o' aria-hidden='true'></i></a>\n"+
-	"				</div>\n"+
-	"				<div class='sinlge-bar shopping'>\n"+
-	"					<a href='#' class='single-icon'><i class='ti-bag'></i> <span class='total-count'>2</span></a>\n"+
-	"					<!-- Shopping Item -->\n"+
-	"					<div class='shopping-item'>\n"+
-	"						<div class='dropdown-cart-header'>\n"+
-	"							<span>2 Items</span>\n"+
-	"							<a href='#'>View Cart</a>\n"+
-	"						</div>\n"+
-	"						<ul class='shopping-list'>\n"+
-	"							<li>\n"+
-	"								<a href='#' class='remove' title='Remove this item'><i class='fa fa-remove'></i></a>\n"+
-	"								<a class='cart-img' href='#'><img src='https://via.placeholder.com/70x70' alt='#'></a>\n"+
-	"								<h4><a href='#'>Woman Ring</a></h4>\n"+
-	"								<p class='quantity'>1x - <span class='amount'>$99.00</span></p>\n"+
-	"							</li>\n"+
-	"							<li>\n"+
-	"								<a href='#' class='remove' title='Remove this item'><i class='fa fa-remove'></i></a>\n"+
-	"								<a class='cart-img' href='#'><img src='https://via.placeholder.com/70x70' alt='#'></a>\n"+
-	"								<h4><a href='#'>Woman Necklace</a></h4>\n"+
-	"								<p class='quantity'>1x - <span class='amount'>$35.00</span></p>\n"+
-	"							</li>\n"+
-	"						</ul>\n"+
-	"						<div class='bottom'>\n"+
-	"							<div class='total'>\n"+
-	"								<span>Total</span>\n"+
-	"								<span class='total-amount'>$134.00</span>\n"+
-	"							</div>\n"+
-	"							<a href='checkout.html' class='btn animate'>Checkout</a>\n"+
-	"						</div>\n"+
-	"					</div>\n"+
-	"					<!--/ End Shopping Item -->\n"+
 	"				</div>\n"+
 	"			</div>\n"+
 	"		</div>\n"+
@@ -530,7 +496,8 @@ function getCovidData(productId){
 		type: 'GET',
 		url: 'https://api.covid19api.com/summary',
 		success: function(data) {
-			let req = JSON.parse(data);
+			console.log(data);
+			let req = data;
 			console.log(req);
 			if(req){
 				let countries = req.Countries;
