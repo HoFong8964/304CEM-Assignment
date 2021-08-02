@@ -4917,6 +4917,40 @@ Version:1.0
 	End Footer CSS
 ===============================*/
 
+
+/*=============================
+	Google Login API & captcha
+===============================*/
 .g-recaptcha {
 	margin-bottom: 15px;
+}
+
+.google-signin-btn{
+	width: 100%;
+}
+
+.google-signin-btn > div{
+	margin: 0 auto;
+}
+
+.split-line {
+	border-bottom: 1px solid #888;
+    padding: 0;
+    margin: 30px 0;
+    position: relative;
+    list-style: none;
+}
+
+.split-line span{
+	display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #888;
+    font-size: 12px;
+    margin-top: -12px;
+    margin-left: -22px;
+    padding: 0 10px;
+    background-color: #fff;
+    list-style: none;
 }

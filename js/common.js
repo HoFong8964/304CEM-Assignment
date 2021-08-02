@@ -421,8 +421,16 @@ function handleLogin(){
 ======================================*/
 
 function handleLogout(){
+	if(getCookie("loginWithGoogle")){
+		console.log(gapi);
+		var auth2 = gapi.auth2.getAuthInstance();
+    	auth2.signOut().then(function () {
+    	  console.log('Google User signed out.');
+    	});
+	}
 	deleteCookie("name");
 	deleteCookie("userId");
+	deleteCookie("loginWithGoogle");
 	window.location.href = "/";
 }
 
@@ -686,4 +694,32 @@ function deleteCookie(cname) {
 	if(getCookie(cname)) {
 	  document.cookie = cname + "=;expires=;path=/";
 	}
+}
+
+/*====================================
+	google login
+======================================*/
+function googleSignIn(googleUser) {
+	var profile = googleUser.getBasicProfile();
+	setCookie("name", profile.getName());
+	setCookie("userId", profile.getId());
+	setCookie("loginWithGoogle", true);
+	window.location.href = "/";
+}
+
+function googleRenderButton() {
+	gapi.signin2.render('google-signin-btn', {
+	  'scope': 'profile email',
+	  'width': 240,
+	  'height': 50,
+	  'longtitle': true,
+	  'theme': 'dark',
+	  'onsuccess': googleSignIn
+	});
   }
+
+function onLoad() {
+	gapi.load('auth2', function() {
+	  gapi.auth2.init();
+	});
+}
