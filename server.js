@@ -316,7 +316,13 @@ function getProduct(res, data){
 	MongoClient.connect(dbUrl, function(err,db){
 		if (err) throw err;
 		var dbo = db.db("assignment");
-		var query={"type": data['type']};
+		var query = {};
+		if(data['type']){
+			query["type"] = data['type'];
+		}
+		if(data['keyword']){
+			query["name"] = new RegExp(data['keyword'], 'i');
+		}
 		dbo.collection("products").find(query).toArray(function(err, result) {
 			if (err) throw err;
 			var response = {

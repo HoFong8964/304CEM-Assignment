@@ -90,7 +90,7 @@ function renderMiddleInner(){
 	"			<div class='search-bar-top'>\n"+
 	"				<div class='search-bar'>\n"+
 	"					<form action='/products'>\n"+
-	"						<input name='search' placeholder='Search Products Here.....' type='search'>\n"+
+	"						<input name='keyword' placeholder='Search Products Here.....' type='search'>\n"+
 	"						<button class='btnn'><i class='ti-search'></i></button>\n"+
 	"					</form>\n"+
 	"				</div>\n"+
@@ -202,6 +202,55 @@ function renderShopService(){
 /*====================================
 	load product list
 ======================================*/
+
+function loadProducts(params){
+	const urlSearchParams = new URLSearchParams(window.location.search);
+	const searchParams = Object.fromEntries(urlSearchParams.entries());
+	console.log(searchParams);
+	var queryData = {};
+	if(searchParams['keyword']){
+		queryData["keyword"] = searchParams['keyword'];
+	}
+	$.ajax({
+		type: 'GET',
+		url: '/getProduct',
+		dataType:"text",
+		data: queryData,
+		success: function(data) {
+			let req = JSON.parse(data);
+			let products = req.res;
+			var content = "";
+			products.forEach(product => {
+				let price = parseFloat(product.price).toFixed(2);
+				content +=
+				"<div class='col-lg-4 col-md-6 col-12'>\n"+
+				"    <div class='single-product'>\n"+
+				"        <div class='product-img'>\n"+
+				"            <a href='product-details.html'>\n"+
+				"                <img class='default-img' src='" + product.img + "' alt='#'>\n"+
+				"                <img class='hover-img' src='" + product.img + "' alt='#'>\n"+
+				"            </a>\n"+
+				"            <div class='button-head'>\n"+
+				"                <div class='product-action-2'>\n"+
+				"                    <a title='Add to Wishlist' onclick=\"addToWishlist('" + product._id + "')\"><i class='fa fa-heart-o'></i> Add to Wishlist</a>\n\n"+
+				"                </div>\n"+
+				"            </div>\n"+
+				"        </div>\n"+
+				"        <div class='product-content'>\n"+
+				"            <h3><a href='product-details.html'>" + product.name + "</a></h3>\n"+
+				"            <div class='product-price'>\n"+
+				"                <span>HKD$" + price + "</span>\n"+
+				"            </div>\n"+
+				"        </div>\n"+
+				"    </div>\n"+
+				"</div>\n";
+			});
+			
+			$(".products").html(content);
+
+		}
+	});
+}
 
 function loadProductsByType(type){
 	var queryData ="type="+type;
