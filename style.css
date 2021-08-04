@@ -1852,10 +1852,9 @@ Version:1.0
   bottom: 45px;
 }
 .single-product .product-img .product-action-2 {
-	position: absolute;
 	left: 0;
 	bottom: 0;
-	text-align: left;
+	text-align: center;
 	z-index: 99;
 	-webkit-transition: all 250ms ease-out;
 	-o-transition: all 250ms ease-out;

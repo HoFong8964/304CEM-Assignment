@@ -33,6 +33,7 @@ function renderTopBar(){
 		"			<div class='right-content'>\n"+
 		"				<ul class='list-main'>\n"+
 		"					<li><i class='ti-user'></i> Hello " + username + "</li>\n"+
+		"					<li><i class='ti-settings'></i> <a href='#'>My account</a></li>\n"+
 		"					<li><i class='ti-power-off'></i><a id='logout' href='#'>Logout</a></li>\n"+
 		"				</ul>\n"+
 		"			</div>\n"+
@@ -88,7 +89,7 @@ function renderMiddleInner(){
 	"		<div class='col-lg-8 col-md-7 col-12'>\n"+
 	"			<div class='search-bar-top'>\n"+
 	"				<div class='search-bar'>\n"+
-	"					<form>\n"+
+	"					<form action='/products'>\n"+
 	"						<input name='search' placeholder='Search Products Here.....' type='search'>\n"+
 	"						<button class='btnn'><i class='ti-search'></i></button>\n"+
 	"					</form>\n"+
@@ -202,7 +203,7 @@ function renderShopService(){
 	load product list
 ======================================*/
 
-function loadProducts(type){
+function loadProductsByType(type){
 	var queryData ="type="+type;
 	$.ajax({
 		type: 'GET',
@@ -224,11 +225,8 @@ function loadProducts(type){
 				"				<img class='hover-img' src='" + product.img + "' alt='" + product.name + "'>\n"+
 				"			</a>\n"+
 				"			<div class='button-head'>\n"+
-				"				<div class='product-action'>\n"+
-				"					<a data-toggle='modal' data-target='#exampleModal' title='View Product Detail' href='#'><i class=' ti-eye'></i><span>View Product Detail</span></a>\n"+
-				"				</div>\n"+
 				"				<div class='product-action-2'>\n"+
-				"					<a title='Add to Wishlist' onclick=\"addToWishlist('" + product._id + "')\">Add to Wishlist</a>\n"+
+				"					<a title='Add to Wishlist' onclick=\"addToWishlist('" + product._id + "')\"><i class='fa fa-heart-o'></i> Add to Wishlist</a>\n"+
 				"				</div>\n"+
 				"			</div>\n"+
 				"		</div>\n"+
