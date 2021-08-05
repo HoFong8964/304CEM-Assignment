@@ -67,17 +67,26 @@ Version:1.0
 		  Slider Range JS
 		=========================*/ 
 		$( function() {
+			const urlSearchParams = new URLSearchParams(window.location.search);
+			const searchParams = Object.fromEntries(urlSearchParams.entries());
+			searchParams.min_amount = searchParams.min_amount ? searchParams.min_amount : 0;
+			searchParams.max_amount = searchParams.max_amount ? searchParams.max_amount : 500;
+
 			$( "#slider-range" ).slider({
 			  range: true,
 			  min: 0,
 			  max: 500,
-			  values: [ 120, 250 ],
+			  values: [ searchParams.min_amount, searchParams.max_amount ],
 			  slide: function( event, ui ) {
-				$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+				$( "#amount" ).html( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+				$( "#min_amount" ).val( ui.values[ 0 ] );
+				$( "#max_amount" ).val( ui.values[ 1 ] );
 			  }
 			});
-			$( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
+			$( "#amount" ).html( "$" + $( "#slider-range" ).slider( "values", 0 ) +
 			  " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+			$( "#min_amount" ).val( $( "#slider-range" ).slider( "values", 0 ) );
+			$( "#max_amount" ).val( $( "#slider-range" ).slider( "values", 1 ) );
 		} );
 		
 		/*=======================

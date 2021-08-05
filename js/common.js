@@ -200,27 +200,39 @@ function renderShopService(){
 }
 
 /*====================================
-	load product list
+	load product list search box
 ======================================*/
 
 function loadProductSearchBox(){
 	const urlSearchParams = new URLSearchParams(window.location.search);
 	const searchParams = Object.fromEntries(urlSearchParams.entries());
+	searchParams.keyword = searchParams.keyword ? searchParams.keyword : '';
+	searchParams.type = searchParams.type ? searchParams.type : '';
 	var content = "";
 	content +=
+	"<form>"+
 	"<!-- Single Widget -->"+
 	"<div class='single-widget'>"+
-	"    <h3 class='title'>Product</h3>"+
-	"    <input name='keyword' placeholder='Keyword' class='search-keyword' >"+
+	"    <h3 class='title'>Keyword</h3>"+
+	"    <input name='keyword' placeholder='Search keyword' class='search-keyword' value='" + searchParams.keyword + "'>"+
 	"</div>"+
 	"<!--/ End Single Widget -->"+
 	"<!-- Single Widget -->"+
 	"<div class='single-widget category'>"+
 	"    <h3 class='title'>Categories</h3>"+
-	"    <ul class='categor-list'>"+
-	"        <li><a href='#'>Man</a></li>"+
-	"        <li><a href='#'>Women</a></li>"+
-	"        <li><a href='#'>Kid</a></li>"+
+	"    <ul class='check-box-list'>"+
+	"        <li>"+
+	"            <label class='checkbox-inline' for='all'><input name='type' id='all' value='' type='radio' " + (searchParams.type == '' ? 'checked' : '') + "> All</label>"+
+	"        </li>"+
+	"        <li>"+
+	"            <label class='checkbox-inline' for='man'><input name='type' id='man' value='man' type='radio' " + (searchParams.type == 'man' ? 'checked' : '') + "> Man</label>"+
+	"        </li>"+
+	"        <li>"+
+	"            <label class='checkbox-inline' for='women'><input name='type' id='women' value='women' type='radio' " + (searchParams.type == 'women' ? 'checked' : '') + "> Women</label>"+
+	"        </li>"+
+	"        <li>"+
+	"            <label class='checkbox-inline' for='kid'><input name='type' id='kid' value='kid' type='radio' " + (searchParams.type == 'kid' ? 'checked' : '') + "> Kid</label>"+
+	"        </li>"+
 	"    </ul>"+
 	"</div>"+
 	"<!--/ End Single Widget -->"+
@@ -232,27 +244,26 @@ function loadProductSearchBox(){
 	"            <div id='slider-range'></div>"+
 	"                <div class='price_slider_amount'>"+
 	"                <div class='label-input'>"+
-	"                    <span>Range:</span><input type='text' id='amount' name='price' placeholder='Add Your Price'/>"+
+	"                    <span>Range:</span><div id='amount' class='amount-range'></div>"+
+	"                    <input type='hidden' name='min_amount' id='min_amount'>"+
+	"                    <input type='hidden' name='max_amount' id='max_amount'>"+
 	"                </div>"+
 	"            </div>"+
 	"        </div>"+
 	"    </div>"+
-	"    <ul class='check-box-list'>"+
-	"        <li>"+
-	"            <label class='checkbox-inline' for='1'><input name='news' id='1' type='checkbox'>$20 - $50<span class='count'>(3)</span></label>"+
-	"        </li>"+
-	"        <li>"+
-	"            <label class='checkbox-inline' for='2'><input name='news' id='2' type='checkbox'>$50 - $100<span class='count'>(5)</span></label>"+
-	"        </li>"+
-	"        <li>"+
-	"            <label class='checkbox-inline' for='3'><input name='news' id='3' type='checkbox'>$100 - $250<span class='count'>(8)</span></label>"+
-	"        </li>"+
-	"    </ul>"+
 	"</div>"+
-	"<!--/ End Shop By Price -->";
+	"<!--/ End Shop By Price -->"+
+	"<div class='search-submit'>"+
+	"	<input type='submit' class='btn' value='Apply'>"+
+	"</div>"+
+	"</form>";
 
 	$(".search-box").html(content);
 }
+
+/*====================================
+	load product list
+======================================*/
 
 function loadProducts(params){
 	const urlSearchParams = new URLSearchParams(window.location.search);
@@ -282,7 +293,7 @@ function loadProducts(params){
 				"                <img class='hover-img' src='" + product.img + "' alt='#'>\n"+
 				"            </a>\n"+
 				"            <div class='button-head'>\n"+
-				"                <div class='product-action-2'>\n"+
+				"                <div class='product-action-2' id='" + product._id + "_action'>\n"+
 				"                    <a title='Add to Wishlist' onclick=\"addToWishlist('" + product._id + "')\"><i class='fa fa-heart-o'></i> Add to Wishlist</a>\n\n"+
 				"                </div>\n"+
 				"            </div>\n"+
@@ -298,6 +309,8 @@ function loadProducts(params){
 			});
 			
 			$(".products").html(content);
+
+			markProductsInWishlist();
 
 		}
 	});
@@ -325,7 +338,7 @@ function loadProductsByType(type){
 				"				<img class='hover-img' src='" + product.img + "' alt='" + product.name + "'>\n"+
 				"			</a>\n"+
 				"			<div class='button-head'>\n"+
-				"				<div class='product-action-2'>\n"+
+				"				<div class='product-action-2' id='" + product._id + "_action'>\n"+
 				"					<a title='Add to Wishlist' onclick=\"addToWishlist('" + product._id + "')\"><i class='fa fa-heart-o'></i> Add to Wishlist</a>\n"+
 				"				</div>\n"+
 				"			</div>\n"+
@@ -342,6 +355,29 @@ function loadProductsByType(type){
 			
 			$("#" + type + " > .tab-single > .row").html(content);
 
+			markProductsInWishlist();
+
+		}
+	});
+}
+
+function markProductsInWishlist(){
+	var queryData ="userId="+getCookie('userId');
+	$.ajax({
+		type: 'GET',
+		url: '/getWishlist',
+		dataType:"text",
+		data:queryData,
+		success: function(data) {
+			let req = JSON.parse(data);
+			if(req.status === 200){
+				let wishlists = req.res;
+				wishlists.forEach(wishlist => {
+					$("#"+wishlist.productObjId+"_action").addClass("inWishlist");
+					$("#"+wishlist.productObjId+"_action a").html("<i class='fa fa-heart-o'></i> Already in Wishlist");
+					console.log($("#"+wishlist.productObjId+"_action a"));
+				});
+			}
 		}
 	});
 }
@@ -518,7 +554,7 @@ function addToWishlist(productId){
 		success: function(data) {
 			let req = JSON.parse(data);
 			if(req.status === 200){
-				alert(req.message);
+				markProductsInWishlist()
 			}
 		}
 	});
