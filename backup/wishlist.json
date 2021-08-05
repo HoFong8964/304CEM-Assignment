@@ -1,31 +1,19 @@
 [{
   "_id": {
-    "$oid": "610025cb9a37be08384794f8"
-  },
-  "productId": "60fd12275fa8c53eab01856b",
-  "userId": "60f98fdf3e55d8110400b5e9"
-},{
-  "_id": {
-    "$oid": "610184640686e54348d8aa3d"
-  },
-  "productId": "60fd12275fa8c53eab01856c",
-  "userId": "60f98fdf3e55d8110400b5e9"
-},{
-  "_id": {
-    "$oid": "610184650686e54348d8aa3e"
+    "$oid": "610b67b8cfa0b94dc8be27aa"
   },
   "productId": "60fd12275fa8c53eab01856d",
-  "userId": "60f98fdf3e55d8110400b5e9"
+  "userId": "610b677dcfa0b94dc8be27a8"
 },{
   "_id": {
-    "$oid": "6101846a0686e54348d8aa3f"
+    "$oid": "610b67bacfa0b94dc8be27ab"
   },
   "productId": "60fd12275fa8c53eab01856e",
-  "userId": "60f98fdf3e55d8110400b5e9"
+  "userId": "610b677dcfa0b94dc8be27a8"
 },{
   "_id": {
-    "$oid": "6101846e0686e54348d8aa40"
+    "$oid": "610b67c2cfa0b94dc8be27ac"
   },
-  "productId": "60fd12275fa8c53eab01856f",
-  "userId": "60f98fdf3e55d8110400b5e9"
+  "productId": "610b5af857df5f4e697a8002",
+  "userId": "610b677dcfa0b94dc8be27a8"
 }]

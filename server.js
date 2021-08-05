@@ -317,13 +317,17 @@ function getProduct(res, data){
 		if (err) throw err;
 		var dbo = db.db("assignment");
 		var query = {};
+		var limit = 1000;
 		if(data['type']){
 			query["type"] = data['type'];
 		}
 		if(data['keyword']){
 			query["name"] = new RegExp(data['keyword'], 'i');
 		}
-		dbo.collection("products").find(query).toArray(function(err, result) {
+		if(data['limit']){
+			limit = parseInt(data['limit']);
+		}
+		dbo.collection("products").find(query).limit(limit).toArray(function(err, result) {
 			if (err) throw err;
 			var response = {
 				status  : 200,

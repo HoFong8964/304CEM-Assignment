@@ -654,7 +654,7 @@ Version:1.0
 	font-size: 14px;
 	font-weight: 400;
 	padding: 0 25px 0 20px;
-	width: 328px;
+	width: 460px;
 }
 .header.shop .search-bar .btnn {
 	height: 50px;
@@ -2071,6 +2071,17 @@ Version:1.0
 	margin-left:5px;
 	color:#666;
 }
+/* Search Keyword */
+.shop-sidebar .search-keyword {
+	height: 48px;
+    background: #fff;
+    color: #666;
+    border-radius: 0;
+    border: none;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 0 25px 0 20px;
+}
 /* Category List */
 .shop-sidebar .categor-list {
 	margin-top: 10px;
@@ -2896,8 +2907,8 @@ Version:1.0
 }
 .shopping-summery tbody tr img {
 	border-radius: 0;
-	width: 80px;
-	height: 108px;
+	width: 120px;
+	height: 120px;
 }
 .shopping-summery tbody tr:last-child{
 	border:none;
