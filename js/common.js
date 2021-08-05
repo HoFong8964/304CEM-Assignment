@@ -273,6 +273,15 @@ function loadProducts(params){
 	if(searchParams['keyword']){
 		queryData["keyword"] = searchParams['keyword'];
 	}
+	if(searchParams['type']){
+		queryData["type"] = searchParams['type'];
+	}
+	if(searchParams['min_amount']){
+		queryData["min_amount"] = searchParams['min_amount'];
+	}
+	if(searchParams['max_amount']){
+		queryData["max_amount"] = searchParams['max_amount'];
+	}
 	$.ajax({
 		type: 'GET',
 		url: '/getProduct',

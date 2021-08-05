@@ -318,15 +318,19 @@ function getProduct(res, data){
 		var dbo = db.db("assignment");
 		var query = {};
 		var limit = 1000;
+		if(data['keyword']){
+			query["name"] = new RegExp(data['keyword'], 'i');
+		}
 		if(data['type']){
 			query["type"] = data['type'];
 		}
-		if(data['keyword']){
-			query["name"] = new RegExp(data['keyword'], 'i');
+		if(data['max_amount']){
+			query["price"] = { $lt: parseFloat(data['max_amount']) };
 		}
 		if(data['limit']){
 			limit = parseInt(data['limit']);
 		}
+		console.log(query);
 		dbo.collection("products").find(query).limit(limit).toArray(function(err, result) {
 			if (err) throw err;
 			var response = {
