@@ -324,14 +324,14 @@ function getProduct(res, data){
 		if(data['type']){
 			query["type"] = data['type'];
 		}
-		if(data['max_amount']){
-			query["price"] = { $lt: parseFloat(data['max_amount']) };
+		if(data['min_amount'] &&  data['max_amount']){
+			query["price"] = { $gte: parseFloat(data['min_amount']), $lte: parseFloat(data['max_amount'])};
 		}
 		if(data['limit']){
 			limit = parseInt(data['limit']);
 		}
-		console.log(query);
-		dbo.collection("products").find(query).limit(limit).toArray(function(err, result) {
+
+		dbo.collection("products").find(query).sort({"price": -1}).limit(limit).toArray(function(err, result) {
 			if (err) throw err;
 			var response = {
 				status  : 200,

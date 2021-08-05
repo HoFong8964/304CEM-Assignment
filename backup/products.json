@@ -6,7 +6,7 @@
   "img": "images/products/man_1.jpg",
   "type": "man",
   "desc": "Cool linen and soft cotton. Feels comfortable but looks sleek.",
-  "price": "199.00"
+  "price": 199.00
 },{
   "_id": {
     "$oid": "60fd12275fa8c53eab01856c"
@@ -15,7 +15,7 @@
   "img": "images/products/man_2.jpg",
   "type": "man",
   "desc": "Enjoy the look of cotton and the feel of AIRism. This tank top is also perfect on its own",
-  "price": "59.00"
+  "price": 259.00
 },{
   "_id": {
     "$oid": "60fd12275fa8c53eab01856d"
@@ -24,7 +24,7 @@
   "img": "images/products/man_3.jpg",
   "type": "man",
   "desc": "Oversized T-shirt with a more elevated feel. Enjoy playing with the sophisticated, yet casual look.",
-  "price": "99.00"
+  "price": 99.00
 },{
   "_id": {
     "$oid": "60fd12275fa8c53eab01856e"
@@ -33,7 +33,7 @@
   "img": "images/products/man_4.jpg",
   "type": "man",
   "desc": "A high-performance item approved by athletes. Stretchy and quick-drying, and made with convenient details.",
-  "price": "149.00"
+  "price": 149.00
 },{
   "_id": {
     "$oid": "610b5af857df5f4e697a7ffc"
@@ -42,7 +42,7 @@
   "img": "images/products/man_5.jpg",
   "type": "man",
   "desc": "Nintendo Switch’s “Animal Crossing: New Horizons” lets you enjoy a free and easy life on a deserted island where time flows just like in real life. The “Animal Crossing” designs for UT that feature such island life will delight people across generations.",
-  "price": "99.00"
+  "price": 327.00
 },{
   "_id": {
     "$oid": "610b5af857df5f4e697a7ffd"
@@ -51,7 +51,7 @@
   "img": "images/products/man_6.jpg",
   "type": "man",
   "desc": "Made of smooth AIRism material with DRY technology. Top and bottom set that is super soft and comfortable.",
-  "price": "79.00"
+  "price": 379.00
 },{
   "_id": {
     "$oid": "60fd12275fa8c53eab01856f"
@@ -60,7 +60,7 @@
   "img": "images/products/women_1.jpg",
   "type": "women",
   "desc": "Nintendo Switch’s “Animal Crossing: New Horizons” lets you enjoy a free and easy life on a deserted island where time flows just like in real life. The “Animal Crossing” designs for UT that feature such island life will delight people across generations.",
-  "price": "79.00"
+  "price": 79.00
 },{
   "_id": {
     "$oid": "60fd12275fa8c53eab018570"
@@ -69,7 +69,7 @@
   "img": "images/products/women_2.jpg",
   "type": "women",
   "desc": "Nintendo Switch’s “Animal Crossing: New Horizons” lets you enjoy a free and easy life on a deserted island where time flows just like in real life. The “Animal Crossing” designs for UT that feature such island life will delight people across generations.",
-  "price": "99.00"
+  "price": 99.00
 },{
   "_id": {
     "$oid": "60fd12275fa8c53eab018571"
@@ -78,7 +78,7 @@
   "img": "images/products/women_3.jpg",
   "type": "women",
   "desc": "Basic denim shorts with distressed finish for casual styling.",
-  "price": "149.00"
+  "price": 149.00
 },{
   "_id": {
     "$oid": "60fd12275fa8c53eab018572"
@@ -87,7 +87,7 @@
   "img": "images/products/women_4.jpg",
   "type": "women",
   "desc": "Designed to flatter the outline of your legs. Tapered, cropped length for a crisp, modern feel.",
-  "price": "299.00"
+  "price": 299.00
 },{
   "_id": {
     "$oid": "610b5af857df5f4e697a7ffe"
@@ -96,7 +96,7 @@
   "img": "images/products/women_5.jpg",
   "type": "women",
   "desc": "This parka can be slipped on easily to block the sun or chilly wind.",
-  "price": "199.00"
+  "price": 199.00
 },{
   "_id": {
     "$oid": "60fd12275fa8c53eab018573"
@@ -105,7 +105,7 @@
   "img": "images/products/kid_1.jpg",
   "type": "kid",
   "desc": "Soft, warm flannel with a brushed feel. In fun colors and patterns.",
-  "price": "99.00"
+  "price": 499.00
 },{
   "_id": {
     "$oid": "60fd12275fa8c53eab018574"
@@ -114,7 +114,7 @@
   "img": "images/products/kid_2.jpg",
   "type": "kid",
   "desc": "Stretch for freedom of movement. High-performance sweatshirt for everyday comfort.",
-  "price": "159.00"
+  "price": 159.00
 },{
   "_id": {
     "$oid": "60fd12275fa8c53eab018575"
@@ -123,7 +123,7 @@
   "img": "images/products/kid_3.jpg",
   "type": "kid",
   "desc": "Incredibly stretchy and comfortable Ultra Stretch pants with an outdoorsy style.",
-  "price": "239.00"
+  "price": 239.00
 },{
   "_id": {
     "$oid": "60fd12275fa8c53eab018576"
@@ -132,7 +132,7 @@
   "img": "images/products/kid_4.jpg",
   "type": "kid",
   "desc": "Quick-drying, high-performance sweat fabric for easy movement. On-trend voluminous sleeves.",
-  "price": "299.00"
+  "price": 299.00
 },{
   "_id": {
     "$oid": "610b5af857df5f4e697a7fff"
@@ -141,7 +141,7 @@
   "img": "images/products/kid_5.jpg",
   "type": "kid",
   "desc": "A new UT in collaboration with two new age artists, YOASOBI！",
-  "price": "339.00"
+  "price": 339.00
 },{
   "_id": {
     "$oid": "610b5af857df5f4e697a8000"
@@ -150,7 +150,7 @@
   "img": "images/products/kid_6.jpg",
   "type": "kid",
   "desc": "Incredibly stretchy and comfortable Ultra Stretch pants with an outdoorsy style.",
-  "price": "239.00"
+  "price": 239.00
 },{
   "_id": {
     "$oid": "610b5af857df5f4e697a8001"
@@ -159,7 +159,7 @@
   "img": "images/products/kid_7.jpg",
   "type": "kid",
   "desc": "A special collection featuring your favorite mischievous Minions to celebrate the upcoming film, ”Minions: The Rise of Gru”.",
-  "price": "145.00"
+  "price": 145.00
 },{
   "_id": {
     "$oid": "610b5af857df5f4e697a8002"
@@ -168,5 +168,5 @@
   "img": "images/products/kid_8.jpg",
   "type": "kid",
   "desc": "Nintendo Switch’s “Animal Crossing: New Horizons” lets you enjoy a free and easy life on a deserted island where time flows just like in real life. The “Animal Crossing” designs for UT that feature such island life will delight people across generations.",
-  "price": "39.00"
+  "price": 39.00
 }]
