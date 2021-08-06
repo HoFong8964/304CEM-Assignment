@@ -549,7 +549,6 @@ function handleLogout(){
 
 function addToWishlist(productId){
 	if(!isLogined()){
-		alert("Please login first");
 		window.location.href = "/login";
 		return false;
 	}
@@ -571,7 +570,6 @@ function addToWishlist(productId){
 
 function getWishlist(productId){
 	if(!isLogined()){
-		alert("Please login first");
 		window.location.href = "/login";
 		return false;
 		
