@@ -68,7 +68,7 @@ function renderMiddleInner(){
 	"		<div class='col-lg-2 col-md-2 col-12'>\n"+
 	"			<!-- Logo -->\n"+
 	"			<div class='logo'>\n"+
-	"				<a href='/index'><img src='images/logo.png' alt='logo'></a>\n"+
+	"				<a href='/'><img src='images/logo.png' alt='logo'></a>\n"+
 	"			</div>\n"+
 	"			<!--/ End Logo -->\n"+
 	"			<!-- Search Form -->\n"+
@@ -550,7 +550,7 @@ function handleLogout(){
 function addToWishlist(productId){
 	if(!isLogined()){
 		alert("Please login first");
-		window.location.href = "/";
+		window.location.href = "/login";
 		return false;
 	}
 
@@ -572,7 +572,7 @@ function addToWishlist(productId){
 function getWishlist(productId){
 	if(!isLogined()){
 		alert("Please login first");
-		window.location.href = "/";
+		window.location.href = "/login";
 		return false;
 		
 	}

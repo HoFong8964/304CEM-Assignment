@@ -16,7 +16,7 @@ http.createServer(function (req, res) {
 		req.params = urlPart[1];
 	}
 	
-    if(req.url === "/index" || req.url === "/"){
+    if(req.url === "/" || req.url === "/"){
 	   	sendFileContent(res, "index.html", "text/html");
     }else if(req.url === "/login"){
 		sendFileContent(res, "login.html", "text/html");
