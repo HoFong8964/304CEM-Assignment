@@ -103,7 +103,7 @@ function renderMiddleInner(){
 	"					<a href='/wishlist' class='single-icon'><i class='fa fa-heart-o' aria-hidden='true'></i></a>\n"+
 	"				</div>\n"+
 	"				<div class='sinlge-bar'>\n"+
-	"					<a href='#' class='single-icon'><i class='fa fa-user-circle-o' aria-hidden='true'></i></a>\n"+
+	"					<a href='/profile' class='single-icon'><i class='fa fa-user-circle-o' aria-hidden='true'></i></a>\n"+
 	"				</div>\n"+
 	"			</div>\n"+
 	"		</div>\n"+
@@ -125,22 +125,14 @@ function renderHeaderInner(){
 	"                            <div class='nav-inner'>	"+
 	"                                <ul class='nav main-menu menu navbar-nav'>"+
 	"                                    <li class='active'><a href='#'>Home</a></li>"+
-	"                                    <li><a href='#'>Product</a></li>												"+
-	"                                    <li><a href='#'>Service</a></li>"+
-	"                                    <li><a href='#'>Shop<i class='ti-angle-down'></i><span class='new'>New</span></a>"+
+	"                                    <li><a href='/products'>All Products</a></li>"+
+	"                                    <li><a href='#'>Pages<i class='ti-angle-down'></i></a>"+
 	"                                        <ul class='dropdown'>"+
-	"                                            <li><a href='shop-grid.html'>Shop Grid</a></li>"+
-	"                                            <li><a href='cart.html'>Cart</a></li>"+
-	"                                            <li><a href='checkout.html'>Checkout</a></li>"+
+	"                                            <li><a href='/covid'>COVID-19</a></li>"+
+	"                                            <li><a href='/weather'>Weather</a></li>"+
 	"                                        </ul>"+
 	"                                    </li>"+
-	"                                    <li><a href='#'>Pages</a></li>									"+
-	"                                    <li><a href='#'>Blog<i class='ti-angle-down'></i></a>"+
-	"                                        <ul class='dropdown'>"+
-	"                                            <li><a href='blog-single-sidebar.html'>Blog Single Sidebar</a></li>"+
-	"                                        </ul>"+
-	"                                    </li>"+
-	"                                    <li><a href='contact.html'>Contact Us</a></li>"+
+	"                                    <li><a href='/profile'>My Profile</a></li>"+
 	"                                </ul>"+
 	"                            </div>"+
 	"                        </div>"+
@@ -297,7 +289,7 @@ function loadProducts(params){
 				"<div class='col-lg-4 col-md-6 col-12'>\n"+
 				"    <div class='single-product'>\n"+
 				"        <div class='product-img'>\n"+
-				"            <a href='product-details.html'>\n"+
+				"            <a href='#'>\n"+
 				"                <img class='default-img' src='" + product.img + "' alt='#'>\n"+
 				"                <img class='hover-img' src='" + product.img + "' alt='#'>\n"+
 				"            </a>\n"+
@@ -308,7 +300,7 @@ function loadProducts(params){
 				"            </div>\n"+
 				"        </div>\n"+
 				"        <div class='product-content'>\n"+
-				"            <h3><a href='product-details.html'>" + product.name + "</a></h3>\n"+
+				"            <h3><a href='#'>" + product.name + "</a></h3>\n"+
 				"            <div class='product-price'>\n"+
 				"                <span>HKD$" + price + "</span>\n"+
 				"            </div>\n"+
@@ -342,7 +334,7 @@ function loadProductsByType(type){
 				"<div class='col-xl-3 col-lg-4 col-md-4 col-12'>\n"+
 				"	<div class='single-product'>\n"+
 				"		<div class='product-img'>\n"+
-				"			<a href='product-details.html'>\n"+
+				"			<a href='#'>\n"+
 				"				<img class='default-img' src='" + product.img + "' alt='" + product.name + "'>\n"+
 				"				<img class='hover-img' src='" + product.img + "' alt='" + product.name + "'>\n"+
 				"			</a>\n"+
@@ -353,7 +345,7 @@ function loadProductsByType(type){
 				"			</div>\n"+
 				"		</div>\n"+
 				"		<div class='product-content'>\n"+
-				"			<h3><a href='product-details.html'>" + product.name + "</a></h3>\n"+
+				"			<h3><a href='#'>" + product.name + "</a></h3>\n"+
 				"			<div class='product-price'>\n"+
 				"				<span>HKD$" + price + "</span>\n"+
 				"			</div>\n"+

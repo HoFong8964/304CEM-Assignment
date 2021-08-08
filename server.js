@@ -30,6 +30,8 @@ http.createServer(function (req, res) {
 		sendFileContent(res, "covid.html", "text/html");
 	}else if(req.url === "/weather"){
 		sendFileContent(res, "weather.html", "text/html");
+	}else if(req.url === "/profile"){
+		sendFileContent(res, "profile.html", "text/html");
 	}else if(/^-+|-+$|[^A-Za-z0-9-]*.js$/.test(req.url.toString())){
 		sendFileContent(res, req.url.toString().substring(1), "text/javascript");
 	}else if(/^-+|-+$|[^A-Za-z0-9-]*.bundle.min.js$/.test(req.url.toString())){
