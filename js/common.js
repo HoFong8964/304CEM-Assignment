@@ -536,6 +536,40 @@ function handleLogout(){
 }
 
 /*====================================
+	profile
+======================================*/
+
+function getProfileData(){
+	var errorExsit = false; 
+	var userId = getCookie("userId");
+	var loginWithGoogle = getCookie("loginWithGoogle");
+	
+	if(!userId || loginWithGoogle){
+		window.location.href = "/";
+		return false;
+	}
+
+	var queryData = {};
+	if(userId){
+		queryData["userId"] = userId;
+	}
+	$.ajax({
+		type: 'GET',
+		url: '/getProfile',
+		dataType:"text",
+		data: queryData,
+		success: function(data) {
+			let req = JSON.parse(data);
+			let userInfo = req.res;
+			console.log(userInfo);
+			$("#email").val(userInfo.email);
+			$("#name").val(userInfo.name);
+
+		}
+	});
+}
+
+/*====================================
 	wishlist
 ======================================*/
 

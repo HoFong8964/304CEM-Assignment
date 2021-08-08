@@ -98,6 +98,14 @@ http.createServer(function (req, res) {
 		}else{
 			res.end("Requedt Method not vaild");
 		}		
+	}else if(req.url === "/getProfile"){
+		if(req.method==="GET"){
+			formData = '';
+			data=qs.parse(req.params);
+			return getProfile(res, data);
+		}else{
+			res.end("Requedt Method not vaild");
+		}			
 	}else if(req.url === "/getProduct"){
 		if(req.method==="GET"){
 			formData = '';
@@ -334,6 +342,32 @@ function getProduct(res, data){
 		}
 
 		dbo.collection("products").find(query).sort({"price": -1}).limit(limit).toArray(function(err, result) {
+			if (err) throw err;
+			var response = {
+				status  : 200,
+				res : result
+			}
+			res.end(JSON.stringify(response));
+		});
+	});
+}
+
+
+/*====================================
+	profile
+======================================*/
+
+function getProfile(res, data){
+	MongoClient.connect(dbUrl, function(err,db){
+		if (err) throw err;
+		var dbo = db.db("assignment");
+		var query = {};
+		if(data['userId']){
+			var query = { "_id": ObjectId(data['userId']) };
+			console.log(query);
+		}
+		
+		dbo.collection("users").findOne(query).then(result => {
 			if (err) throw err;
 			var response = {
 				status  : 200,
