@@ -15,6 +15,10 @@ $(document).on('ready', function() {
 	$("#logout").click(function() {
 		handleLogout();
 	});
+
+	$("#updateProfile").click(function() {
+		handleUpdateProfile();
+	});
 });
 	
 /*====================================
@@ -33,7 +37,7 @@ function renderTopBar(){
 		"			<div class='right-content'>\n"+
 		"				<ul class='list-main'>\n"+
 		"					<li><i class='ti-user'></i> Hello " + username + "</li>\n"+
-		"					<li><i class='ti-settings'></i> <a href='#'>My account</a></li>\n"+
+		"					<li><i class='ti-settings'></i> <a href='/profile'>My Profile</a></li>\n"+
 		"					<li><i class='ti-power-off'></i><a id='logout' href='#'>Logout</a></li>\n"+
 		"				</ul>\n"+
 		"			</div>\n"+
@@ -501,6 +505,65 @@ function handleLogin(){
 		url: '/handleLogin',
 		dataType:"text",
 		data:queryData,
+		success: function(data) {
+			let req = JSON.parse(data);
+			console.log(req);
+			if(req.status === 200){
+				let userInfo = req.data;
+				setCookie("name", userInfo.name);
+				setCookie("userId", userInfo._id);
+				window.location.href = "/";
+			} else{
+				$("#loginError").html(req.message);
+				grecaptcha.reset();
+			}
+		}
+	});
+}
+
+/*====================================
+	profile
+======================================*/
+
+function handleUpdateProfile(){
+	var errorExsit = false;
+	var name = $("#name").val();
+	var oldpassword = $("#oldpassword").val();
+	var newpassword = $("#newpassword").val();
+	var repassword = $("#repassword").val();
+	var token = $("#token").val();
+
+	$("#loginError").html("");
+	if(name == ""){
+		$("#loginError").html("Please enter name to update");
+		errorExsit = true;
+	}
+	if(oldpassword || newpassword || repassword){
+		if(!(oldpassword && newpassword && repassword)){
+			$("#loginError").html("In order to update your password, please enter Old Password, New Password and Retype New Password");
+			errorExsit = true;
+		}
+		const decimal = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+		if(newpassword && !newpassword.match(decimal)){
+			$("#loginError").html("The password you entered didn't match our requirement <ul><li>The password should bt 6 to 20 characters</li><li>Contain at least one lowercase letter, one uppercase letter, one numeric digit</li></ul>");
+			errorExsit = true;
+		}
+		else if(newpassword != repassword){
+			$("#loginError").html("Password not match with Retype Password");
+			errorExsit = true;
+		}
+	}
+	
+	if(errorExsit){
+		return false;
+	}
+	
+	var queryData = "userId="+getCookie('userId')+"name="+name+"&oldpassword="+oldpassword+"&newpassword="+newpassword;
+	$.ajax({
+		type: 'PUT',
+		url: '/handleUpdateProfile',
+		dataType:"text",
+		data: queryData,
 		success: function(data) {
 			let req = JSON.parse(data);
 			console.log(req);

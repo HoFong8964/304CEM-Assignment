@@ -150,6 +150,20 @@ http.createServer(function (req, res) {
 		}else{
 			res.end("Requedt Method not vaild");
 		}		
+	}else if(req.url === "/handleUpdateProfile"){
+		if(req.method==="PUT"){
+			formData = '';
+			return req.on('data', function(data) {
+				formData += data;
+				return req.on('end', function() {
+					var data;
+					data=qs.parse(formData);
+					updateProfile(res, data);
+				});
+			});
+		}else{
+			res.end("Requedt Method not vaild");
+		}		
 	}else{
 		sendFileContent(res, req.url.toString().substring(1), "");
 	}
@@ -470,6 +484,90 @@ function error_response(res, msg){
 		message : msg
 	}
 	res.end(JSON.stringify(response));
+}
+
+/*====================================
+	profile
+======================================*/
+
+function updateProfile(res, data){
+	if(data['oldpassword'] && data['newpassword']){
+		const crypto = require('crypto')
+		const md5sum = crypto.createHash('md5');
+		let oldpassword = md5sum.update(data['oldpassword']).digest('hex');
+		let newpassword = md5sum.update(data['newpassword']).digest('hex');
+
+		MongoClient.connect(dbUrl, function(err,db){
+			if (err) throw err;
+			var dbo = db.db("assignment");
+
+			var login_info = {
+				'_id': ObjectId(data['userId']),
+				'password': oldpassword
+			};
+
+			dbo.collection("users").findOne({{ "_id": ObjectId(data['userId']) }}).then(result => {
+				if(result){
+					console.log("result: ", result);
+					error_response(res, 'The email or password is not correct');
+				} else {
+					error_response(res, 'The email or password is not correct');
+				}
+				db.close();
+			  })
+		});
+
+		var profile_info = {
+			'name': data['name'],
+			'password': data['newpassword']
+		};
+	}
+	else{
+		var profile_info = {
+			'name': data['name']
+		};
+	}
+	
+
+
+	//check captcha before exec
+	const query = stringify({
+		secret: recaptchaSecret,
+		response: data['token']
+	});
+
+	axios
+  		.post(`https://google.com/recaptcha/api/siteverify?${query}`, {})
+  		.then((verifyRes) => {
+			if(verifyRes.data.success){
+				MongoClient.connect(dbUrl, function(err,db){
+					if (err) throw err;
+					var dbo = db.db("assignment");
+					//var myobj = stringMsg;
+		
+					//check user duplicate
+					var query={"email": signup_info['email']};
+					dbo.collection("users").find(query).toArray(function(err, result) {
+						if (err) throw err;
+						if(result.length > 0){
+							error_response(res, 'Email has been used.');
+						}
+						else{
+							dbo.collection("users").insertOne(signup_info, function(err, result) {
+								if (err) throw err;
+								success_response(res, 'Account Created. Plaease login!');
+							});
+						}
+						db.close();
+					});
+				});
+			} else{
+				error_response(res, 'Captcha Verify Fail');
+			}
+  		})
+  		.catch((error) => {
+  		  error_response(res, 'Captcha Verify Fail');
+  		});
 }
 
 function success_response(res, msg, data=[]){
