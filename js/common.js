@@ -37,6 +37,7 @@ function renderTopBar(){
 		"			<div class='right-content'>\n"+
 		"				<ul class='list-main'>\n"+
 		"					<li><i class='ti-user'></i> Hello " + username + "</li>\n"+
+		"					<li><i class='ti-location-pin'></i> <a href='/store'>Store Locator</a></li>\n"+
 		"					<li><i class='ti-settings'></i> <a href='/profile'>My Profile</a></li>\n"+
 		"					<li><i class='ti-power-off'></i><a id='logout' href='#'>Logout</a></li>\n"+
 		"				</ul>\n"+
@@ -54,6 +55,7 @@ function renderTopBar(){
 		"		<div class='col-lg-8 col-md-12 col-12'>\n"+
 		"			<div class='right-content'>\n"+
 		"				<ul class='list-main'>\n"+
+		"					<li><i class='ti-location-pin'></i> <a href='/store'>Store Locator</a></li>\n"+
 		"					<li><i class='ti-power-off'></i><a href='/login'>Login</a></li>\n"+
 		"				</ul>\n"+
 		"			</div>\n"+
@@ -558,7 +560,7 @@ function handleUpdateProfile(){
 		return false;
 	}
 	
-	var queryData = "userId="+getCookie('userId')+"name="+name+"&oldpassword="+oldpassword+"&newpassword="+newpassword;
+	var queryData = "userId="+getCookie('userId')+"&name="+name+"&oldpassword="+oldpassword+"&newpassword="+newpassword+"&token="+token;
 	$.ajax({
 		type: 'PUT',
 		url: '/handleUpdateProfile',
@@ -568,10 +570,17 @@ function handleUpdateProfile(){
 			let req = JSON.parse(data);
 			console.log(req);
 			if(req.status === 200){
-				let userInfo = req.data;
-				setCookie("name", userInfo.name);
-				setCookie("userId", userInfo._id);
-				window.location.href = "/";
+				let autoLogout = req.autoLogout;
+				if(autoLogout){
+					alert("Your have updated your password, please login again");
+					handleLogout();
+				}
+				else{
+					setCookie("name", name);
+					alert("Your profile have been updated");
+					window.location.href = "/profile";
+				}
+				
 			} else{
 				$("#loginError").html(req.message);
 				grecaptcha.reset();
@@ -840,6 +849,43 @@ function getWeatherData(){
 			}
 		}
 	});
+}
+
+/*====================================
+	store locator
+======================================*/
+function getStoreData(){
+	const uluru = { lat: 22.278419040409517, lng: 114.18207068126713 };
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 18,
+    center: uluru,
+  });
+  const contentString =
+    '<div id="content">' +
+    '<div id="siteNotice">' +
+    "</div>" +
+    '<strong>Causeway Bay - Times Square</strong>' +
+    '<div id="bodyContent">' +
+    "<p>Times Square Basement 1, Causeway Bay</p>" +
+	"<p><i>Business Hours</i> <br> <span>10:30am - 10:00pm (Sun - Thu)<br>10:30am - 10:30pm (Fri -Sat , Eve of Public Holiday)</span></p>" +
+    "</div>" +
+    "</div>";
+  const infowindow = new google.maps.InfoWindow({
+    content: contentString,
+    maxWidth: 200,
+  });
+  const marker = new google.maps.Marker({
+    position: uluru,
+    map,
+    title: "Causeway Bay - Times Square",
+  });
+  marker.addListener("click", () => {
+    infowindow.open({
+      anchor: marker,
+      map,
+      shouldFocus: false,
+    });
+  });
 }
 
 /*====================================

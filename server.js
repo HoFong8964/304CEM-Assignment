@@ -32,6 +32,8 @@ http.createServer(function (req, res) {
 		sendFileContent(res, "weather.html", "text/html");
 	}else if(req.url === "/profile"){
 		sendFileContent(res, "profile.html", "text/html");
+	}else if(req.url === "/store"){
+		sendFileContent(res, "store.html", "text/html");
 	}else if(/^-+|-+$|[^A-Za-z0-9-]*.js$/.test(req.url.toString())){
 		sendFileContent(res, req.url.toString().substring(1), "text/javascript");
 	}else if(/^-+|-+$|[^A-Za-z0-9-]*.bundle.min.js$/.test(req.url.toString())){
@@ -308,7 +310,6 @@ function handleLogin(res, data){
 	axios
   		.post(`https://google.com/recaptcha/api/siteverify?${query}`, {})
   		.then((verifyRes) => {
-			console.log("verifyRes: ", verifyRes);
 			if(verifyRes.data.success){
 				MongoClient.connect(dbUrl, function(err,db){
 					if (err) throw err;
@@ -378,7 +379,6 @@ function getProfile(res, data){
 		var query = {};
 		if(data['userId']){
 			var query = { "_id": ObjectId(data['userId']) };
-			console.log(query);
 		}
 		
 		dbo.collection("users").findOne(query).then(result => {
@@ -494,9 +494,10 @@ function updateProfile(res, data){
 	if(data['oldpassword'] && data['newpassword']){
 		const crypto = require('crypto')
 		const md5sum = crypto.createHash('md5');
+		const md5sum2 = crypto.createHash('md5');
 		let oldpassword = md5sum.update(data['oldpassword']).digest('hex');
-		let newpassword = md5sum.update(data['newpassword']).digest('hex');
-
+		let newpassword = md5sum2.update(data['newpassword']).digest('hex');
+		var autoLogout = false;
 		MongoClient.connect(dbUrl, function(err,db){
 			if (err) throw err;
 			var dbo = db.db("assignment");
@@ -506,12 +507,13 @@ function updateProfile(res, data){
 				'password': oldpassword
 			};
 
-			dbo.collection("users").findOne({{ "_id": ObjectId(data['userId']) }}).then(result => {
+			dbo.collection("users").findOne({ "_id": ObjectId(data['userId']) }).then(result => {
 				if(result){
-					console.log("result: ", result);
-					error_response(res, 'The email or password is not correct');
+					if(result.password != oldpassword){
+						error_response(res, 'The old password is not correct');
+					}
 				} else {
-					error_response(res, 'The email or password is not correct');
+					error_response(res, 'User not found!');
 				}
 				db.close();
 			  })
@@ -519,8 +521,9 @@ function updateProfile(res, data){
 
 		var profile_info = {
 			'name': data['name'],
-			'password': data['newpassword']
+			'password': newpassword
 		};
+		autoLogout = true;
 	}
 	else{
 		var profile_info = {
@@ -528,8 +531,6 @@ function updateProfile(res, data){
 		};
 	}
 	
-
-
 	//check captcha before exec
 	const query = stringify({
 		secret: recaptchaSecret,
@@ -546,20 +547,18 @@ function updateProfile(res, data){
 					//var myobj = stringMsg;
 		
 					//check user duplicate
-					var query={"email": signup_info['email']};
-					dbo.collection("users").find(query).toArray(function(err, result) {
-						if (err) throw err;
-						if(result.length > 0){
-							error_response(res, 'Email has been used.');
+					if(dbo.collection("users").updateOne(
+						{ "_id": ObjectId(data['userId']) },
+						{ $set: profile_info }
+					)){
+						console.log("update success");
+						var response = {
+							status  : 200,
+							autoLogout: autoLogout,
+							res: "Update Success"
 						}
-						else{
-							dbo.collection("users").insertOne(signup_info, function(err, result) {
-								if (err) throw err;
-								success_response(res, 'Account Created. Plaease login!');
-							});
-						}
-						db.close();
-					});
+						res.end(JSON.stringify(response))
+					}
 				});
 			} else{
 				error_response(res, 'Captcha Verify Fail');
