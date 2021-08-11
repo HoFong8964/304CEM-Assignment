@@ -262,6 +262,7 @@ function checkSignupEmail(res, data){
                     res : true
                 }
             }
+			console.log(response);
             res.end(JSON.stringify(response));
         });
     });
@@ -286,6 +287,7 @@ function checkSignupEmail(res, data){
 					res : true
 				}
 			}
+			console.log(response);
 			res.end(JSON.stringify(response));
 		});
 	});
@@ -362,6 +364,7 @@ function getProduct(res, data){
 				status  : 200,
 				res : result
 			}
+			console.log(response);
 			res.end(JSON.stringify(response));
 		});
 	});
@@ -387,6 +390,7 @@ function getProfile(res, data){
 				status  : 200,
 				res : result
 			}
+			console.log(response);
 			res.end(JSON.stringify(response));
 		});
 	});
@@ -455,6 +459,7 @@ function getWishlist(res, data){
 				status  : 200,
 				res : result
 			}
+			console.log(response);
 			res.end(JSON.stringify(response));
 			db.close();
 		});
@@ -472,18 +477,11 @@ function deleteWishlist(res, data){
 				status  : 200,
 				res : result
 			}
+			console.log(response);
 			res.end(JSON.stringify(response));
 			db.close();
 		});
 	  });
-}
-
-function error_response(res, msg){
-	var response = {
-		status  : 500,
-		message : msg
-	}
-	res.end(JSON.stringify(response));
 }
 
 /*====================================
@@ -544,19 +542,17 @@ function updateProfile(res, data){
 				MongoClient.connect(dbUrl, function(err,db){
 					if (err) throw err;
 					var dbo = db.db("assignment");
-					//var myobj = stringMsg;
-		
-					//check user duplicate
 					if(dbo.collection("users").updateOne(
 						{ "_id": ObjectId(data['userId']) },
 						{ $set: profile_info }
 					)){
-						console.log("update success");
+						console.log("Update user profile success");
 						var response = {
 							status  : 200,
 							autoLogout: autoLogout,
 							res: "Update Success"
 						}
+						console.log(response);
 						res.end(JSON.stringify(response))
 					}
 				});
@@ -575,5 +571,15 @@ function success_response(res, msg, data=[]){
 		message : msg,
 		data: data
 	}
+	console.log(response);
+	res.end(JSON.stringify(response));
+}
+
+function error_response(res, msg){
+	var response = {
+		status  : 500,
+		message : msg
+	}
+	console.log(response);
 	res.end(JSON.stringify(response));
 }
