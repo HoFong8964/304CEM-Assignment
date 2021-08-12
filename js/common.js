@@ -425,9 +425,9 @@ function handleSignup(){
 		$("#repasswordError").html("Please enter Retype Password");
 		errorExsit = true;
 	}
-	const decimal = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+	const decimal = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
 	if(password && !password.match(decimal)){
-		$("#passwordError").html("The password you entered didn't match our requirement <ul><li>The password should bt 6 to 20 characters</li><li>Contain at least one lowercase letter, one uppercase letter, one numeric digit</li></ul>");
+		$("#passwordError").html("The password you entered didn't match our requirement <ul><li>The password should bt 6 to 20 characters</li><li>Contain at least one lowercase letter, one uppercase letter, one numeric digit, one special symbol</li></ul>");
 		errorExsit = true;
 	}
 	else if(password != repassword){
@@ -545,9 +545,9 @@ function handleUpdateProfile(){
 			$("#loginError").html("In order to update your password, please enter Old Password, New Password and Retype New Password");
 			errorExsit = true;
 		}
-		const decimal = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+		const decimal = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
 		if(newpassword && !newpassword.match(decimal)){
-			$("#loginError").html("The password you entered didn't match our requirement <ul><li>The password should bt 6 to 20 characters</li><li>Contain at least one lowercase letter, one uppercase letter, one numeric digit</li></ul>");
+			$("#loginError").html("The password you entered didn't match our requirement <ul><li>The password should bt 6 to 20 characters</li><li>Contain at least one lowercase letter, one uppercase letter, one numeric digit, one special symbol</li></ul>");
 			errorExsit = true;
 		}
 		else if(newpassword != repassword){

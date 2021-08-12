@@ -489,80 +489,78 @@ function deleteWishlist(res, data){
 ======================================*/
 
 function updateProfile(res, data){
-	if(data['oldpassword'] && data['newpassword']){
-		const crypto = require('crypto')
-		const md5sum = crypto.createHash('md5');
-		const md5sum2 = crypto.createHash('md5');
-		let oldpassword = md5sum.update(data['oldpassword']).digest('hex');
-		let newpassword = md5sum2.update(data['newpassword']).digest('hex');
-		var autoLogout = false;
-		MongoClient.connect(dbUrl, function(err,db){
-			if (err) throw err;
-			var dbo = db.db("assignment");
-
-			var login_info = {
-				'_id': ObjectId(data['userId']),
-				'password': oldpassword
-			};
-
-			dbo.collection("users").findOne({ "_id": ObjectId(data['userId']) }).then(result => {
-				if(result){
-					if(result.password != oldpassword){
-						error_response(res, 'The old password is not correct');
-					}
-				} else {
-					error_response(res, 'User not found!');
-				}
-				db.close();
-			  })
-		});
-
-		var profile_info = {
-			'name': data['name'],
-			'password': newpassword
-		};
-		autoLogout = true;
-	}
-	else{
-		var profile_info = {
-			'name': data['name']
-		};
-	}
-	
+	var error = false;
 	//check captcha before exec
 	const query = stringify({
 		secret: recaptchaSecret,
 		response: data['token']
 	});
 
-	axios
-  		.post(`https://google.com/recaptcha/api/siteverify?${query}`, {})
-  		.then((verifyRes) => {
-			if(verifyRes.data.success){
-				MongoClient.connect(dbUrl, function(err,db){
-					if (err) throw err;
-					var dbo = db.db("assignment");
-					if(dbo.collection("users").updateOne(
-						{ "_id": ObjectId(data['userId']) },
-						{ $set: profile_info }
-					)){
-						console.log("Update user profile success");
-						var response = {
-							status  : 200,
-							autoLogout: autoLogout,
-							res: "Update Success"
-						}
-						console.log(response);
-						res.end(JSON.stringify(response))
+	
+
+	MongoClient.connect(dbUrl, function(err,db){
+		if (err) throw err;
+		var dbo = db.db("assignment");
+
+		dbo.collection("users").findOne({ "_id": ObjectId(data['userId']) }).then(result => {
+			if(result){
+				if(data['oldpassword'] && data['newpassword']){
+					const crypto = require('crypto')
+					const md5sum = crypto.createHash('md5');
+					const md5sum2 = crypto.createHash('md5');
+					let oldpassword = md5sum.update(data['oldpassword']).digest('hex');
+					let newpassword = md5sum2.update(data['newpassword']).digest('hex');
+					var autoLogout = false;
+					if(result.password != oldpassword){
+						error_response(res, 'The old password is not correct');
+						return false;
 					}
-				});
-			} else{
-				error_response(res, 'Captcha Verify Fail');
+					var profile_info = {
+						'name': data['name'],
+						'password': newpassword
+					};
+					autoLogout = true;
+				}
+				else{
+					var profile_info = {
+						'name': data['name']
+					};
+				}
+				axios
+  					.post(`https://google.com/recaptcha/api/siteverify?${query}`, {})
+  					.then((verifyRes) => {
+						if(verifyRes.data.success){
+							MongoClient.connect(dbUrl, function(err,db){
+								if (err) throw err;
+								var dbo = db.db("assignment");
+								if(dbo.collection("users").updateOne(
+									{ "_id": ObjectId(data['userId']) },
+									{ $set: profile_info }
+								)){
+									console.log("Update user profile success");
+									var response = {
+										status  : 200,
+										autoLogout: autoLogout,
+										res: "Update Success"
+									}
+									console.log(response);
+									res.end(JSON.stringify(response))
+								}
+							});
+						} else{
+							error_response(res, 'Captcha Verify Fail');
+						}
+  					})
+  					.catch((error) => {
+  					  error_response(res, 'Captcha Verify Fail');
+  					});
+			} else {
+				error_response(res, 'User not found!');
+				error = true;
 			}
-  		})
-  		.catch((error) => {
-  		  error_response(res, 'Captcha Verify Fail');
-  		});
+			db.close();
+		  })
+	});
 }
 
 function success_response(res, msg, data=[]){
